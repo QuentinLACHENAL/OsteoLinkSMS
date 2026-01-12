@@ -7,11 +7,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
+
 import android.provider.CallLog
 import android.provider.ContactsContract
-import android.telephony.SmsManager
+
 import android.telephony.TelephonyManager
+
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import com.example.osteolinksms.MainActivity.Companion.ID_QUENTIN
@@ -31,7 +32,6 @@ class CallReceiver : BroadcastReceiver() {
 
     companion object {
         private const val KEY_WAS_RINGING = "was_ringing"
-        const val SENT_SMS_ACTION = "com.example.osteolinksms.SMS_SENT"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -169,7 +169,7 @@ class CallReceiver : BroadcastReceiver() {
                 try {
                     val logTimestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(log.substringBefore(" - "))?.time ?: 0
                     return@any logTimestamp > fiveMinutesAgo
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     return@any false
                 }
             }
@@ -201,52 +201,6 @@ class CallReceiver : BroadcastReceiver() {
     }
 
     private fun sendSms(context: Context, phoneNumber: String, message: String) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            Logger.log(context, "SEND_SMS permission is missing.")
-            return
-        }
-
-        try {
-            val smsManager = context.getSystemService(SmsManager::class.java)
-            val parts = smsManager.divideMessage(message)
-
-            if (parts.size > 1) {
-                Logger.log(context, "Message is long (${message.length} chars). Sending as multipart SMS (${parts.size} parts).")
-                val sentIntents = ArrayList<PendingIntent>()
-                
-                for (i in parts.indices) {
-                    val sentIntent = Intent(context, SmsResultReceiver::class.java)
-                    sentIntent.action = SENT_SMS_ACTION
-                    val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        PendingIntent.FLAG_IMMUTABLE
-                    } else {
-                        0
-                    }
-                    // Use a unique request code for each part to ensure they are distinct PendingIntents
-                    val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt() + i, sentIntent, flags)
-                    sentIntents.add(sentPI)
-                }
-
-                smsManager.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, null)
-                Logger.log(context, "SmsManager.sendMultipartTextMessage called for $phoneNumber.")
-            } else {
-                val sentIntent = Intent(context, SmsResultReceiver::class.java)
-                sentIntent.action = SENT_SMS_ACTION
-
-                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.FLAG_IMMUTABLE
-                } else {
-                    0
-                }
-                val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), sentIntent, flags)
-
-                smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
-                Logger.log(context, "SmsManager.sendTextMessage called for $phoneNumber.")
-            }
-
-            HistoryManager.addHistoryEntry(context, "Tentative d\'envoi auto. à $phoneNumber")
-        } catch (e: Exception) {
-            Logger.log(context, "FATAL: Exception during SMS sending: ${e.message}")
-        }
+        SmsSender.sendSms(context, phoneNumber, message)
     }
 }

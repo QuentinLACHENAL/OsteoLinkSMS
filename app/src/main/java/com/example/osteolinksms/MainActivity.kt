@@ -2,13 +2,13 @@ package com.example.osteolinksms
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.PendingIntent
+
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.telephony.SmsManager
+
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -75,6 +75,27 @@ class MainActivity : AppCompatActivity() {
         setupInitialMessages()
         setupPractitionerSelection()
         setupManualSms()
+
+        findViewById<Button>(R.id.testShortSmsButton).setOnClickListener {
+            val phoneNumber = phoneNumberEditText.text.toString()
+            if (phoneNumber.isNotBlank()) {
+                SmsSender.sendSms(this, phoneNumber, "Ceci est un test court OsteoLink.")
+                Toast.makeText(this, "Test court envoyé...", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Entrez un numéro pour le test.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        findViewById<Button>(R.id.testLongSmsButton).setOnClickListener {
+            val phoneNumber = phoneNumberEditText.text.toString()
+            if (phoneNumber.isNotBlank()) {
+                val longMsg = "Ceci est un test de message long pour vérifier la compatibilité du système avec les SMS multiparties. Il contient beaucoup de texte pour dépasser la limite des 160 caractères standards imposée par le protocole GSM. 1234567890."
+                SmsSender.sendSms(this, phoneNumber, longMsg)
+                Toast.makeText(this, "Test long envoyé...", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Entrez un numéro pour le test.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         findViewById<Button>(R.id.editMessagesButton).setOnClickListener {
             startActivity(Intent(this, EditMessagesActivity::class.java))
@@ -146,44 +167,8 @@ class MainActivity : AppCompatActivity() {
         val message = sharedPreferences.getString(messageKey, "")
 
         if (!message.isNullOrEmpty()) {
-            try {
-                val smsManager = getSystemService(SmsManager::class.java)
-                val parts = smsManager.divideMessage(message)
-
-                if (parts.size > 1) {
-                    val sentIntents = ArrayList<PendingIntent>()
-                    for (i in parts.indices) {
-                        val sentIntent = Intent(this, SmsResultReceiver::class.java)
-                        sentIntent.action = "com.example.osteolinksms.SMS_SENT"
-                        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            PendingIntent.FLAG_IMMUTABLE
-                        } else {
-                            0
-                        }
-                        val sentPI = PendingIntent.getBroadcast(this, System.currentTimeMillis().toInt() + i, sentIntent, flags)
-                        sentIntents.add(sentPI)
-                    }
-                    smsManager.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, null)
-                } else {
-                    val sentIntent = Intent(this, SmsResultReceiver::class.java)
-                    sentIntent.action = "com.example.osteolinksms.SMS_SENT"
-
-                    val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        PendingIntent.FLAG_IMMUTABLE
-                    } else {
-                        0
-                    }
-
-                    val sentPI = PendingIntent.getBroadcast(this, System.currentTimeMillis().toInt(), sentIntent, flags)
-                    smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
-                }
-
-                Toast.makeText(this, "Tentative d\'envoi du SMS...", Toast.LENGTH_SHORT).show()
-                HistoryManager.addHistoryEntry(this, "Tentative d\'envoi manuel à $phoneNumber")
-            } catch (e: Exception) {
-                Toast.makeText(this, "Erreur lors de l'envoi du SMS", Toast.LENGTH_SHORT).show()
-                Logger.log(this, "Manual SMS error: ${e.message}")
-            }
+            SmsSender.sendSms(this, phoneNumber, message)
+            Toast.makeText(this, "Tentative d\'envoi du SMS...", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Le message pour ce praticien est vide.", Toast.LENGTH_SHORT).show()
         }

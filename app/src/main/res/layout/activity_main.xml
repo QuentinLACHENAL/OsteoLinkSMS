@@ -18,7 +18,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sélectionner le praticien actif" />
+            android:text="@string/practitioner_selection_title" />
         <RadioGroup
             android:id="@+id/practitionerRadioGroup"
             android:layout_width="wrap_content"
@@ -28,12 +28,12 @@
                 android:id="@+id/quentinRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quentin" />
+                android:text="@string/practitioner_quentin" />
             <RadioButton
                 android:id="@+id/lauraRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Laura" />
+                android:text="@string/practitioner_laura" />
         </RadioGroup>
 
         <CheckBox
@@ -41,14 +41,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Répondre aux numéros inconnus seulement" />
+            android:text="@string/unknown_only_checkbox" />
 
         <CheckBox
             android:id="@+id/forceSendCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Forcer l'envoi (pour tests)" />
+            android:text="@string/force_send_checkbox" />
 
         <!-- Manual SMS -->
         <LinearLayout
@@ -61,14 +61,32 @@
                 android:id="@+id/phoneNumberEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Numéro du patient"                android:inputType="phone" />
+                android:hint="@string/patient_number_hint"                android:inputType="phone" />
 
             <Button
                 android:id="@+id/sendSmsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Envoyer SMS au patient" />
+                android:text="@string/send_sms_to_patient_button" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/testShortSmsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/test_short_sms_button" />
+                <Button
+                    android:id="@+id/testLongSmsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/test_long_sms_button" />
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -84,7 +102,7 @@
             android:id="@+id/checkPermissionsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vérifier les autorisations" />
+            android:text="@string/check_permissions_button" />
 
 
         <LinearLayout
@@ -98,7 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Historique" />
+                android:text="@string/history_button" />
 
             <Button
                 android:id="@+id/editMessagesButton"
@@ -106,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="Messages" />
+                android:text="@string/messages_button" />
 
             <Button
                 android:id="@+id/logsButton"
@@ -114,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="Logs" />
+                android:text="@string/logs_button" />
         </LinearLayout>
 
     </LinearLayout>
