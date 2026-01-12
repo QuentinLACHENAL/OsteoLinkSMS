@@ -147,19 +147,36 @@ class MainActivity : AppCompatActivity() {
 
         if (!message.isNullOrEmpty()) {
             try {
-                val sentIntent = Intent(this, SmsResultReceiver::class.java)
-                sentIntent.action = "com.example.osteolinksms.SMS_SENT"
-
-                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    PendingIntent.FLAG_IMMUTABLE
-                } else {
-                    0
-                }
-
-                val sentPI = PendingIntent.getBroadcast(this, System.currentTimeMillis().toInt(), sentIntent, flags)
-
                 val smsManager = getSystemService(SmsManager::class.java)
-                smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+                val parts = smsManager.divideMessage(message)
+
+                if (parts.size > 1) {
+                    val sentIntents = ArrayList<PendingIntent>()
+                    for (i in parts.indices) {
+                        val sentIntent = Intent(this, SmsResultReceiver::class.java)
+                        sentIntent.action = "com.example.osteolinksms.SMS_SENT"
+                        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            PendingIntent.FLAG_IMMUTABLE
+                        } else {
+                            0
+                        }
+                        val sentPI = PendingIntent.getBroadcast(this, System.currentTimeMillis().toInt() + i, sentIntent, flags)
+                        sentIntents.add(sentPI)
+                    }
+                    smsManager.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, null)
+                } else {
+                    val sentIntent = Intent(this, SmsResultReceiver::class.java)
+                    sentIntent.action = "com.example.osteolinksms.SMS_SENT"
+
+                    val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.FLAG_IMMUTABLE
+                    } else {
+                        0
+                    }
+
+                    val sentPI = PendingIntent.getBroadcast(this, System.currentTimeMillis().toInt(), sentIntent, flags)
+                    smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+                }
 
                 Toast.makeText(this, "Tentative d\'envoi du SMS...", Toast.LENGTH_SHORT).show()
                 HistoryManager.addHistoryEntry(this, "Tentative d\'envoi manuel à $phoneNumber")

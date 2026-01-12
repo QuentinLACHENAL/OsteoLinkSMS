@@ -207,20 +207,43 @@ class CallReceiver : BroadcastReceiver() {
         }
 
         try {
-            val sentIntent = Intent(context, SmsResultReceiver::class.java)
-            sentIntent.action = SENT_SMS_ACTION
-
-            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.FLAG_IMMUTABLE
-            } else {
-                0
-            }
-            val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), sentIntent, flags)
-
             val smsManager = context.getSystemService(SmsManager::class.java)
-            smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+            val parts = smsManager.divideMessage(message)
 
-            Logger.log(context, "SmsManager.sendTextMessage called for $phoneNumber. Waiting for system report.")
+            if (parts.size > 1) {
+                Logger.log(context, "Message is long (${message.length} chars). Sending as multipart SMS (${parts.size} parts).")
+                val sentIntents = ArrayList<PendingIntent>()
+                
+                for (i in parts.indices) {
+                    val sentIntent = Intent(context, SmsResultReceiver::class.java)
+                    sentIntent.action = SENT_SMS_ACTION
+                    val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.FLAG_IMMUTABLE
+                    } else {
+                        0
+                    }
+                    // Use a unique request code for each part to ensure they are distinct PendingIntents
+                    val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt() + i, sentIntent, flags)
+                    sentIntents.add(sentPI)
+                }
+
+                smsManager.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, null)
+                Logger.log(context, "SmsManager.sendMultipartTextMessage called for $phoneNumber.")
+            } else {
+                val sentIntent = Intent(context, SmsResultReceiver::class.java)
+                sentIntent.action = SENT_SMS_ACTION
+
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    0
+                }
+                val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), sentIntent, flags)
+
+                smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+                Logger.log(context, "SmsManager.sendTextMessage called for $phoneNumber.")
+            }
+
             HistoryManager.addHistoryEntry(context, "Tentative d\'envoi auto. à $phoneNumber")
         } catch (e: Exception) {
             Logger.log(context, "FATAL: Exception during SMS sending: ${e.message}")
