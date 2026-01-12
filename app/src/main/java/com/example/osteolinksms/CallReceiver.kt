@@ -73,7 +73,7 @@ class CallReceiver : BroadcastReceiver() {
             Thread.sleep(1000)
 
             context.contentResolver.query(
-                CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC LIMIT 1"
+                CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC"
             )?.use { cursor ->
                 if (cursor.moveToFirst()) {
                     val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
