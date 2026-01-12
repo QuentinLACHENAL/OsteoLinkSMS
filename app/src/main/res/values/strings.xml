@@ -39,9 +39,9 @@
     <string name="generate_all_templates_button">Générer les modèles</string>
     <string name="save_settings_button">Tout Enregistrer</string>
     
-    <string name="template_work">Bonjour, je suis %1$s. En consultation, je ne peux répondre. RDV sur: %2$s</string>
-    <string name="template_off">Bonjour, je suis %1$s. Le cabinet est actuellement fermé. Vous pouvez prendre RDV sur: %2$s</string>
-    <string name="template_vacation">Bonjour, je suis %1$s. Je suis actuellement en congés. Vous pouvez consulter mes disponibilités sur: %2$s</string>
+    <string name="template_work">Bonjour, je suis actuellement en consultation. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: %2$s</string>
+    <string name="template_off">Bonjour, je suis indisponible pour le moment. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: %2$s</string>
+    <string name="template_vacation">Bonjour, je suis actuellement en congés. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: %2$s</string>
 
     <string name="tester_mode_button">Activer Mode Testeur</string>
     <string name="tester_mode_active">Mode Testeur Activé</string>
