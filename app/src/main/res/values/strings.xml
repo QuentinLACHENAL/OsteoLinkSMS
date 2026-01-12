@@ -3,4 +3,16 @@
 
     <string name="history_title">Historique des événements</string>
     <string name="history_clear_button">Effacer l\'historique</string>
+
+    <string name="practitioner_selection_title">Sélectionner le praticien actif</string>
+    <string name="practitioner_quentin">Quentin</string>
+    <string name="practitioner_laura">Laura</string>
+    <string name="unknown_only_checkbox">Répondre aux numéros inconnus seulement</string>
+    <string name="force_send_checkbox">Forcer l\'envoi (pour tests)</string>
+    <string name="patient_number_hint">Numéro du patient</string>
+    <string name="send_sms_to_patient_button">Envoyer SMS au patient</string>
+    <string name="check_permissions_button">Vérifier les autorisations</string>
+    <string name="history_button">Historique</string>
+    <string name="messages_button">Messages</string>
+    <string name="logs_button">Logs</string>
 </resources>
