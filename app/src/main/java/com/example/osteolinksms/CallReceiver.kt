@@ -19,6 +19,10 @@ import com.example.osteolinksms.MainActivity.Companion.KEY_FORCE_SEND
 import com.example.osteolinksms.MainActivity.Companion.KEY_SELECTED_PRACTITIONER_ID
 import com.example.osteolinksms.MainActivity.Companion.KEY_UNKNOWN_ONLY
 import com.example.osteolinksms.MainActivity.Companion.PREFS_NAME
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -57,8 +61,12 @@ class CallReceiver : BroadcastReceiver() {
                 Logger.log(context, "State is IDLE. Read was_ringing = $wasRinging.")
                 if (wasRinging) {
                     prefs.edit { putBoolean(KEY_WAS_RINGING, false) }
-                    Logger.log(context, "Condition 'wasRinging' is true. Proceeding to check last call.")
-                    checkLastCall(context)
+                    Logger.log(context, "Condition 'wasRinging' is true. Launching background task to check call log.")
+                    val pendingResult = goAsync()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        checkLastCall(context)
+                        pendingResult.finish()
+                    }
                 }
             }
             TelephonyManager.EXTRA_STATE_OFFHOOK -> {
@@ -69,15 +77,15 @@ class CallReceiver : BroadcastReceiver() {
     }
 
     @SuppressLint("Range")
-    private fun checkLastCall(context: Context) {
-        Logger.log(context, "Checking last call...")
+    private suspend fun checkLastCall(context: Context) {
+        Logger.log(context, "BACKGROUND_TASK: Checking last call...")
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            Logger.log(context, "READ_CALL_LOG permission is missing.")
+            Logger.log(context, "BACKGROUND_TASK: READ_CALL_LOG permission is missing.")
             return
         }
 
         try {
-            Thread.sleep(1000)
+            delay(1500) 
 
             context.contentResolver.query(
                 CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC"
@@ -88,20 +96,20 @@ class CallReceiver : BroadcastReceiver() {
                     val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
                     val timeSinceCall = System.currentTimeMillis() - date
 
-                    Logger.log(context, "Last call details: num=$number, type=$type, recent=${timeSinceCall}ms ago")
+                    Logger.log(context, "BACKGROUND_TASK: Last call details: num=$number, type=$type, recent=${timeSinceCall}ms ago")
 
-                    if (type == CallLog.Calls.MISSED_TYPE && timeSinceCall < 10000) {
-                        Logger.log(context, "Call identified as a recent missed call. Handling SMS.")
+                    if (type == CallLog.Calls.MISSED_TYPE && timeSinceCall < 15000) {
+                        Logger.log(context, "BACKGROUND_TASK: Call identified as a recent missed call. Handling SMS.")
                         handleMissedCall(context, number)
                     } else {
-                        Logger.log(context, "Call is not a recent missed call. No action taken.")
+                        Logger.log(context, "BACKGROUND_TASK: Call is not a recent missed call. No action taken.")
                     }
                 } else {
-                    Logger.log(context, "Could not read last call. Cursor is empty.")
+                    Logger.log(context, "BACKGROUND_TASK: Could not read last call. Cursor is empty.")
                 }
             }
         } catch (e: Exception) {
-            Logger.log(context, "Exception reading call log: ${e.message}")
+            Logger.log(context, "BACKGROUND_TASK: Exception reading call log: ${e.message}")
         }
     }
 
