@@ -49,7 +49,11 @@
         </receiver>
 
         <receiver android:name=".SmsResultReceiver"
-            android:exported="true" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.osteolinksms.SMS_SENT" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

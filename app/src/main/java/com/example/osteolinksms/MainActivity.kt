@@ -2,7 +2,7 @@ package com.example.osteolinksms
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.PendingIntent
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -139,11 +139,14 @@ class MainActivity : AppCompatActivity() {
 
         if (!message.isNullOrEmpty()) {
             try {
+                val sentIntent = Intent(CallReceiver.SENT_SMS_ACTION)
+                val sentPI = PendingIntent.getBroadcast(this, 1, sentIntent, PendingIntent.FLAG_IMMUTABLE)
+
                 val smsManager = getSystemService(SmsManager::class.java)
-                smsManager.sendTextMessage(phoneNumber, null, message, null, null)
-                Toast.makeText(this, "SMS envoyé au $phoneNumber", Toast.LENGTH_SHORT).show()
-                HistoryManager.addHistoryEntry(this, "SMS manuel envoyé à $phoneNumber")
-                NotificationManager.showSmsSentNotification(this, phoneNumber)
+                smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+
+                Toast.makeText(this, "Tentative d\'envoi du SMS...", Toast.LENGTH_SHORT).show()
+                HistoryManager.addHistoryEntry(this, "Tentative d\'envoi manuel à $phoneNumber")
             } catch (e: Exception) {
                 Toast.makeText(this, "Erreur lors de l'envoi du SMS", Toast.LENGTH_SHORT).show()
                 Logger.log(this, "Manual SMS error: ${e.message}")

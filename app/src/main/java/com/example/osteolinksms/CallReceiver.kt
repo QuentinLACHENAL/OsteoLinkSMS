@@ -28,11 +28,6 @@ class CallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Logger.log(context, "BroadcastReceiver onReceive, action: ${intent.action}")
 
-        if (intent.action == SENT_SMS_ACTION) {
-            SmsResultReceiver().onReceive(context, intent)
-            return
-        }
-
         if (intent.action != TelephonyManager.ACTION_PHONE_STATE_CHANGED) {
             return
         }
@@ -165,7 +160,7 @@ class CallReceiver : BroadcastReceiver() {
 
         try {
             val sentIntent = Intent(SENT_SMS_ACTION)
-            val sentPI = PendingIntent.getBroadcast(context, 0, sentIntent, PendingIntent.FLAG_IMMUTABLE)
+            val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), sentIntent, PendingIntent.FLAG_IMMUTABLE)
 
             val smsManager = context.getSystemService(SmsManager::class.java)
             smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
