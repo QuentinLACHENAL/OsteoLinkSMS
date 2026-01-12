@@ -2,6 +2,7 @@ package com.example.osteolinksms
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -21,10 +22,16 @@ class CallReceiver : BroadcastReceiver() {
 
     companion object {
         private const val KEY_WAS_RINGING = "was_ringing"
+        const val SENT_SMS_ACTION = "com.example.osteolinksms.SMS_SENT"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         Logger.log(context, "BroadcastReceiver onReceive, action: ${intent.action}")
+
+        if (intent.action == SENT_SMS_ACTION) {
+            SmsResultReceiver().onReceive(context, intent)
+            return
+        }
 
         if (intent.action != TelephonyManager.ACTION_PHONE_STATE_CHANGED) {
             return
@@ -157,11 +164,14 @@ class CallReceiver : BroadcastReceiver() {
         }
 
         try {
+            val sentIntent = Intent(SENT_SMS_ACTION)
+            val sentPI = PendingIntent.getBroadcast(context, 0, sentIntent, PendingIntent.FLAG_IMMUTABLE)
+
             val smsManager = context.getSystemService(SmsManager::class.java)
-            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
-            Logger.log(context, "SUCCESS: SmsManager.sendTextMessage called for $phoneNumber.")
-            HistoryManager.addHistoryEntry(context, "Réponse auto. envoyée à $phoneNumber")
-            NotificationManager.showSmsSentNotification(context, phoneNumber)
+            smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
+
+            Logger.log(context, "SmsManager.sendTextMessage called for $phoneNumber. Waiting for system report.")
+            HistoryManager.addHistoryEntry(context, "Tentative d\'envoi auto. à $phoneNumber")
         } catch (e: Exception) {
             Logger.log(context, "FATAL: Exception during SMS sending: ${e.message}")
         }

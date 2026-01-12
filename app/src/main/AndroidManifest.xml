@@ -48,6 +48,9 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".SmsResultReceiver"
+            android:exported="true" />
+
     </application>
 
 </manifest>
