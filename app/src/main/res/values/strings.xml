@@ -15,4 +15,6 @@
     <string name="history_button">Historique</string>
     <string name="messages_button">Messages</string>
     <string name="logs_button">Logs</string>
+    <string name="test_short_sms_button">Test Court</string>
+    <string name="test_long_sms_button">Test Long</string>
 </resources>
