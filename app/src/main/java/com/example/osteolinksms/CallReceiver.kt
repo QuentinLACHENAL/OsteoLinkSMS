@@ -1,13 +1,16 @@
 package com.example.osteolinksms
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.provider.CallLog
 import android.provider.ContactsContract
 import android.telephony.SmsManager
 import android.telephony.TelephonyManager
+import androidx.core.content.ContextCompat
 
 class CallReceiver : BroadcastReceiver() {
 
@@ -45,6 +48,10 @@ class CallReceiver : BroadcastReceiver() {
     @SuppressLint("Range")
     private fun checkLastCall(context: Context) {
         Logger.log(context, "Checking last call...")
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            Logger.log(context, "READ_CALL_LOG permission is missing.")
+            return
+        }
 
         try {
             context.contentResolver.query(
@@ -65,8 +72,6 @@ class CallReceiver : BroadcastReceiver() {
                     Logger.log(context, "Could not read last call. Cursor is empty.")
                 }
             }
-        } catch (e: SecurityException) {
-            Logger.log(context, "SecurityException reading call log: ${e.message}")
         } catch (e: Exception) {
             Logger.log(context, "Exception reading call log: ${e.message}")
         }
@@ -99,6 +104,10 @@ class CallReceiver : BroadcastReceiver() {
     }
 
     private fun isUnknownNumber(context: Context, phoneNumber: String): Boolean {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            Logger.log(context, "READ_CONTACTS permission is missing.")
+            return true // Assume unknown if permission is missing
+        }
         Logger.log(context, "Checking if '$phoneNumber' is in contacts.")
         val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
@@ -118,10 +127,17 @@ class CallReceiver : BroadcastReceiver() {
     }
 
     private fun sendSms(context: Context, phoneNumber: String, message: String) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            Logger.log(context, "SEND_SMS permission is missing.")
+            return
+        }
+
         try {
-            SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, null, null)
+            val smsManager = context.getSystemService(SmsManager::class.java)
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
             Logger.log(context, "SMS sent to $phoneNumber.")
             HistoryManager.addNumberToHistory(context, phoneNumber)
+            NotificationManager.showSmsSentNotification(context, phoneNumber)
         } catch (e: Exception) {
             Logger.log(context, "Error sending SMS: ${e.message}")
         }
