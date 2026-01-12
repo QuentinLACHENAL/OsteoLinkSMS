@@ -4,9 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:padding="16dp"
     tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/logo_osteolink"
+        android:contentDescription="@string/app_name"
+        android:layout_marginBottom="24dp"/>
 
     <TextView
         android:id="@+id/titleTextView"
@@ -33,6 +41,7 @@
         android:id="@+id/selectionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="24dp"
         android:textSize="16sp"
         tools:text="Sélection actuelle : Quentin Lachenal"/>
@@ -41,6 +50,7 @@
         android:id="@+id/unknownOnlyCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:text="Envoyer uniquement aux numéros inconnus" />
 
