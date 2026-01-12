@@ -2,29 +2,25 @@ package com.example.osteolinksms
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-
 import android.provider.CallLog
 import android.provider.ContactsContract
-
 import android.telephony.TelephonyManager
-
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import com.example.osteolinksms.MainActivity.Companion.ID_QUENTIN
 import com.example.osteolinksms.MainActivity.Companion.KEY_FORCE_SEND
-import com.example.osteolinksms.MainActivity.Companion.KEY_SELECTED_PRACTITIONER_ID
 import com.example.osteolinksms.MainActivity.Companion.KEY_UNKNOWN_ONLY
+import com.example.osteolinksms.MainActivity.Companion.KEY_VACATION_MODE
 import com.example.osteolinksms.MainActivity.Companion.PREFS_NAME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -123,9 +119,19 @@ class CallReceiver : BroadcastReceiver() {
             return
         }
 
+        // --- WHITELIST CHECK ---
+        val whitelist = sharedPreferences.getString(EditMessagesActivity.KEY_WHITELIST, "") ?: ""
+        if (isInWhitelist(phoneNumber, whitelist)) {
+            Logger.log(context, "SMS not sent: $phoneNumber is in the exclusion list.")
+            HistoryManager.addHistoryEntry(context, "Appel ignoré (Exclusion) : $phoneNumber")
+            return
+        }
+
         val forceSend = sharedPreferences.getBoolean(KEY_FORCE_SEND, false)
-        if (!forceSend && hasRecentSms(context, phoneNumber)) {
-            Logger.log(context, "SMS not sent: An SMS was already sent to $phoneNumber recently.")
+        val delayMinutes = sharedPreferences.getInt(EditMessagesActivity.KEY_DELAY_MINUTES, 5)
+        
+        if (!forceSend && hasRecentSms(context, phoneNumber, delayMinutes)) {
+            Logger.log(context, "SMS not sent: SMS already sent to $phoneNumber in the last $delayMinutes min.")
             return
         }
 
@@ -135,17 +141,37 @@ class CallReceiver : BroadcastReceiver() {
             return
         }
 
-        val selectedPractitionerId = sharedPreferences.getInt(KEY_SELECTED_PRACTITIONER_ID, ID_QUENTIN)
-        val messageKey = if (selectedPractitionerId == ID_QUENTIN) {
-            EditMessagesActivity.KEY_QUENTIN_MESSAGE
-        } else {
-            EditMessagesActivity.KEY_LAURA_MESSAGE
+        // --- INTELLIGENT MESSAGE SELECTION ---
+        val isVacation = sharedPreferences.getBoolean(KEY_VACATION_MODE, false)
+        val startHour = sharedPreferences.getInt(EditMessagesActivity.KEY_START_HOUR, 8)
+        val endHour = sharedPreferences.getInt(EditMessagesActivity.KEY_END_HOUR, 19)
+        val workDays = sharedPreferences.getString(EditMessagesActivity.KEY_WORK_DAYS, "2,3,4,5,6") ?: "2,3,4,5,6"
+        
+        val now = Calendar.getInstance()
+        val currentHour = now.get(Calendar.HOUR_OF_DAY)
+        val currentDay = now.get(Calendar.DAY_OF_WEEK).toString()
+
+        val isWorkDay = workDays.split(",").contains(currentDay)
+        val isWorkHour = currentHour in startHour until endHour
+
+        val message: String? = when {
+            isVacation -> {
+                Logger.log(context, "Mode: Vacation active.")
+                sharedPreferences.getString(EditMessagesActivity.KEY_MSG_VACATION, "")
+            }
+            isWorkDay && isWorkHour -> {
+                Logger.log(context, "Mode: Working Hours.")
+                sharedPreferences.getString(EditMessagesActivity.KEY_MSG_WORK, "")
+            }
+            else -> {
+                Logger.log(context, "Mode: Off Hours / Off Day.")
+                sharedPreferences.getString(EditMessagesActivity.KEY_MSG_OFF, "")
+            }
         }
 
-        val message = sharedPreferences.getString(messageKey, null)
-
         if (message.isNullOrEmpty()) {
-            Logger.log(context, "SMS not sent: message for the selected practitioner is empty.")
+            Logger.log(context, "SMS not sent: selected message is empty or not configured.")
+            HistoryManager.addHistoryEntry(context, "Échec: Message (type adapté) non configuré")
             return
         }
 
@@ -156,10 +182,19 @@ class CallReceiver : BroadcastReceiver() {
     private fun isMobileNumber(phoneNumber: String): Boolean {
         return phoneNumber.startsWith("+336") || phoneNumber.startsWith("+337") || phoneNumber.startsWith("06") || phoneNumber.startsWith("07")
     }
+    
+    private fun isInWhitelist(number: String, whitelist: String): Boolean {
+        if (whitelist.isBlank()) return false
+        val cleanNumber = number.replace(" ", "").replace("+33", "0")
+        return whitelist.split(",").any { 
+            val entry = it.trim().replace(" ", "").replace("+33", "0")
+            entry.isNotEmpty() && (cleanNumber == entry || entry.endsWith(cleanNumber.takeLast(9)))
+        }
+    }
 
-    private fun hasRecentSms(context: Context, phoneNumber: String): Boolean {
+    private fun hasRecentSms(context: Context, phoneNumber: String, delayMinutes: Int): Boolean {
         val history = HistoryManager.getHistory(context)
-        val fiveMinutesAgo = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5)
+        val limitTime = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(delayMinutes.toLong())
 
         return history.any { log ->
             val cleanLog = log.substringAfter(" - ")
@@ -168,7 +203,7 @@ class CallReceiver : BroadcastReceiver() {
             if (sentToThisNumber) {
                 try {
                     val logTimestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(log.substringBefore(" - "))?.time ?: 0
-                    return@any logTimestamp > fiveMinutesAgo
+                    return@any logTimestamp > limitTime
                 } catch (_: Exception) {
                     return@any false
                 }

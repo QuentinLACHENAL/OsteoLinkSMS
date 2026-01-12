@@ -2,18 +2,17 @@ package com.example.osteolinksms
 
 import android.Manifest
 import android.annotation.SuppressLint
-
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -42,18 +41,21 @@ class MainActivity : AppCompatActivity() {
     private val PERMISSIONS_REQUEST_CODE = 123
 
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var practitionerRadioGroup: RadioGroup
+    private lateinit var practitionerNameEditText: EditText
+    private lateinit var vacationModeSwitch: Switch
     private lateinit var unknownOnlyCheckBox: CheckBox
     private lateinit var forceSendCheckBox: CheckBox
     private lateinit var phoneNumberEditText: EditText
+    private lateinit var testButtonsLayout: LinearLayout
+    private lateinit var testerModeButton: Button
+    private lateinit var smsSentTodayTextView: TextView
 
     companion object {
         const val PREFS_NAME = "OsteoLinkPrefs"
-        const val KEY_SELECTED_PRACTITIONER_ID = "selectedPractitionerId"
+        const val KEY_PRACTITIONER_NAME = "practitionerName"
+        const val KEY_VACATION_MODE = "vacationMode"
         const val KEY_UNKNOWN_ONLY = "unknownOnly"
         const val KEY_FORCE_SEND = "forceSend"
-        const val ID_QUENTIN = 1
-        const val ID_LAURA = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,10 +63,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        practitionerRadioGroup = findViewById(R.id.practitionerRadioGroup)
+        practitionerNameEditText = findViewById(R.id.practitionerNameEditText)
+        vacationModeSwitch = findViewById(R.id.vacationModeSwitch)
         unknownOnlyCheckBox = findViewById(R.id.unknownOnlyCheckBox)
         forceSendCheckBox = findViewById(R.id.forceSendCheckBox)
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText)
+        testButtonsLayout = findViewById(R.id.testButtonsLayout)
+        testerModeButton = findViewById(R.id.testerModeButton)
+        smsSentTodayTextView = findViewById(R.id.smsSentTodayTextView)
 
         NotificationManager.createNotificationChannel(this)
 
@@ -72,10 +78,75 @@ class MainActivity : AppCompatActivity() {
             requestPermissions()
         }
 
-        setupInitialMessages()
-        setupPractitionerSelection()
-        setupManualSms()
+        setupUI()
+        setupListeners()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        updateDashboard()
+    }
+
+    private fun updateDashboard() {
+        val history = HistoryManager.getHistory(this)
+        val todayStr = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(java.util.Date())
+        
+        val count = history.count { log ->
+            log.startsWith(todayStr) && log.contains("succès")
+        }
+        
+        smsSentTodayTextView.text = getString(R.string.sms_sent_today, count)
+    }
+
+    private fun setupUI() {
+        // Load saved practitioner name
+        val savedName = sharedPreferences.getString(KEY_PRACTITIONER_NAME, "")
+        practitionerNameEditText.setText(savedName)
+
+        // Load checkboxes (Default false)
+        vacationModeSwitch.isChecked = sharedPreferences.getBoolean(KEY_VACATION_MODE, false)
+        unknownOnlyCheckBox.isChecked = sharedPreferences.getBoolean(KEY_UNKNOWN_ONLY, false)
+        forceSendCheckBox.isChecked = sharedPreferences.getBoolean(KEY_FORCE_SEND, false)
+        
+        // Hide test buttons initially
+        testButtonsLayout.visibility = View.GONE
+        updateTesterModeButtonText(false)
+    }
+
+    private fun setupListeners() {
+        // Save Name
+        findViewById<Button>(R.id.savePractitionerButton).setOnClickListener {
+            val name = practitionerNameEditText.text.toString()
+            sharedPreferences.edit { putString(KEY_PRACTITIONER_NAME, name) }
+            Toast.makeText(this, "Nom enregistré", Toast.LENGTH_SHORT).show()
+        }
+
+        // Switches & Checkboxes
+        vacationModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit { putBoolean(KEY_VACATION_MODE, isChecked) }
+        }
+
+        unknownOnlyCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit { putBoolean(KEY_UNKNOWN_ONLY, isChecked) }
+        }
+
+        forceSendCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit { putBoolean(KEY_FORCE_SEND, isChecked) }
+        }
+
+        // Tester Mode Toggle
+        testerModeButton.setOnClickListener {
+            val isVisible = testButtonsLayout.visibility == View.VISIBLE
+            if (isVisible) {
+                testButtonsLayout.visibility = View.GONE
+                updateTesterModeButtonText(false)
+            } else {
+                testButtonsLayout.visibility = View.VISIBLE
+                updateTesterModeButtonText(true)
+            }
+        }
+
+        // Test Buttons
         findViewById<Button>(R.id.testShortSmsButton).setOnClickListener {
             val phoneNumber = phoneNumberEditText.text.toString()
             if (phoneNumber.isNotBlank()) {
@@ -97,6 +168,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Manual Send
+        findViewById<Button>(R.id.sendSmsButton).setOnClickListener {
+            val phoneNumber = phoneNumberEditText.text.toString()
+            if (phoneNumber.isNotBlank()) {
+                sendManualSms(phoneNumber)
+            } else {
+                Toast.makeText(this, "Veuillez entrer un numéro de téléphone", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Navigation
         findViewById<Button>(R.id.editMessagesButton).setOnClickListener {
             startActivity(Intent(this, EditMessagesActivity::class.java))
         }
@@ -114,63 +196,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupInitialMessages() {
-        sharedPreferences.edit {
-            if (!sharedPreferences.contains(EditMessagesActivity.KEY_QUENTIN_MESSAGE)) {
-                putString(EditMessagesActivity.KEY_QUENTIN_MESSAGE, "Bonjour, je suis actuellement en consultation. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: https://www.doctolib.fr/osteopathe/longeville-les-metz/quentin-lachenal/booking/")
-            }
-            if (!sharedPreferences.contains(EditMessagesActivity.KEY_LAURA_MESSAGE)) {
-                putString(EditMessagesActivity.KEY_LAURA_MESSAGE, "Bonjour, je suis actuellement en consultation. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: https://www.doctolib.fr/osteopathe/longeville-les-metz/laura-hugues/booking/")
-            }
-        }
-    }
-
-    private fun setupPractitionerSelection() {
-        val selectedId = sharedPreferences.getInt(KEY_SELECTED_PRACTITIONER_ID, ID_QUENTIN)
-        if (selectedId == ID_QUENTIN) {
-            findViewById<RadioButton>(R.id.quentinRadioButton).isChecked = true
+    private fun updateTesterModeButtonText(isActive: Boolean) {
+        if (isActive) {
+            testerModeButton.text = getString(R.string.tester_mode_active)
         } else {
-            findViewById<RadioButton>(R.id.lauraRadioButton).isChecked = true
-        }
-
-        practitionerRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val newId = if (checkedId == R.id.quentinRadioButton) ID_QUENTIN else ID_LAURA
-            sharedPreferences.edit { putInt(KEY_SELECTED_PRACTITIONER_ID, newId) }
-        }
-
-        unknownOnlyCheckBox.isChecked = sharedPreferences.getBoolean(KEY_UNKNOWN_ONLY, false)
-        unknownOnlyCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit { putBoolean(KEY_UNKNOWN_ONLY, isChecked) }
-        }
-
-        forceSendCheckBox.isChecked = sharedPreferences.getBoolean(KEY_FORCE_SEND, false)
-        forceSendCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            sharedPreferences.edit { putBoolean(KEY_FORCE_SEND, isChecked) }
-        }
-    }
-
-    private fun setupManualSms() {
-        findViewById<Button>(R.id.sendSmsButton).setOnClickListener {
-            val phoneNumber = phoneNumberEditText.text.toString()
-            if (phoneNumber.isNotBlank()) {
-                sendManualSms(phoneNumber)
-            } else {
-                Toast.makeText(this, "Veuillez entrer un numéro de téléphone", Toast.LENGTH_SHORT).show()
-            }
+            testerModeButton.text = getString(R.string.tester_mode_button)
         }
     }
 
     @SuppressLint("MissingPermission")
     private fun sendManualSms(phoneNumber: String) {
-        val selectedId = sharedPreferences.getInt(KEY_SELECTED_PRACTITIONER_ID, ID_QUENTIN)
-        val messageKey = if (selectedId == ID_QUENTIN) EditMessagesActivity.KEY_QUENTIN_MESSAGE else EditMessagesActivity.KEY_LAURA_MESSAGE
-        val message = sharedPreferences.getString(messageKey, "")
+        val message = sharedPreferences.getString(EditMessagesActivity.KEY_MSG_WORK, "")
 
         if (!message.isNullOrEmpty()) {
             SmsSender.sendSms(this, phoneNumber, message)
             Toast.makeText(this, "Tentative d\'envoi du SMS...", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Le message pour ce praticien est vide.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Le message 'En Consultation' n'est pas configuré.", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, EditMessagesActivity::class.java))
         }
     }
 

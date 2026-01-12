@@ -1,39 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Message pour Quentin Lachenal"        android:textSize="18sp" />
-
-    <EditText
-        android:id="@+id/quentinMessageEditText"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minLines="3"
-        android:gravity="top"        android:layout_marginBottom="16dp" />
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Message pour Laura Hugues"        android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_section_general"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"
+            android:textColor="#3F51B5"/>
 
-    <EditText
-        android:id="@+id/lauraMessageEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minLines="3"
-        android:gravity="top"        android:layout_marginBottom="16dp" />
+        <EditText
+            android:id="@+id/doctolibIdEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/doctolib_id_hint"
+            android:inputType="text"
+            android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/saveMessagesButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Enregistrer" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/work_days_label"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="12dp">
+            <CheckBox android:id="@+id/checkMon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_mon" android:textSize="12sp"/>
+            <CheckBox android:id="@+id/checkTue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_tue" android:textSize="12sp"/>
+            <CheckBox android:id="@+id/checkWed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_wed" android:textSize="12sp"/>
+            <CheckBox android:id="@+id/checkThu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_thu" android:textSize="12sp"/>
+            <CheckBox android:id="@+id/checkFri" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_fri" android:textSize="12sp"/>
+            <CheckBox android:id="@+id/checkSat" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_sat" android:textSize="12sp"/>
+            <CheckBox android:id="@+id/checkSun" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/day_sun" android:textSize="12sp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/work_hours_label"
+            android:textStyle="bold"/>
+            
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:id="@+id/startHourEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/start_hour_hint"
+                android:inputType="number"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="à"
+                android:layout_gravity="center"
+                android:padding="8dp"/>
+            <EditText
+                android:id="@+id/endHourEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/end_hour_hint"
+                android:inputType="number"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/delayEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/delay_minutes_hint"
+            android:inputType="number"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/whitelist_label"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/whitelistEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/whitelist_hint"
+            android:inputType="text"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_section_messages"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"
+            android:textColor="#3F51B5"/>
+
+        <Button
+            android:id="@+id/generateTemplatesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/generate_all_templates_button"
+            android:backgroundTint="#FF9800"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_work_label"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/msgWorkEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="3"
+            android:gravity="top"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_off_label"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/msgOffEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="3"
+            android:gravity="top"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_vacation_label"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/msgVacationEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="3"
+            android:gravity="top"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/saveSettingsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_settings_button"
+            android:textSize="18sp"
+            android:layout_marginBottom="32dp"/>
+
+    </LinearLayout>
+</ScrollView>

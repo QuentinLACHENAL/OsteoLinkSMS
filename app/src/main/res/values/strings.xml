@@ -4,16 +4,57 @@
     <string name="history_title">Historique des événements</string>
     <string name="history_clear_button">Effacer l\'historique</string>
 
-    <string name="practitioner_selection_title">Sélectionner le praticien actif</string>
-    <string name="practitioner_quentin">Quentin</string>
-    <string name="practitioner_laura">Laura</string>
+    <string name="day_mon">Lun</string>
+    <string name="day_tue">Mar</string>
+    <string name="day_wed">Mer</string>
+    <string name="day_thu">Jeu</string>
+    <string name="day_fri">Ven</string>
+    <string name="day_sat">Sam</string>
+    <string name="day_sun">Dim</string>
+    
+    <string name="whitelist_label">Liste d\'exclusion (Ignorer ces numéros)</string>
+    <string name="whitelist_hint">0612345678, 0789...</string>
+    <string name="work_days_label">Jours d\'activation</string>
+    
+    <string name="dashboard_title">Activité du jour</string>
+    <string name="sms_sent_today">SMS envoyés aujourd\'hui : %1$d</string>
+    
+    <string name="settings_section_general">Paramètres Généraux</string>
+    <string name="settings_section_messages">Configuration des Messages</string>
+
+    <string name="practitioner_name_hint">Votre Nom (Praticien)</string>
+    <string name="doctolib_id_hint">ID Doctolib (ex: quentin-lachenal)</string>
+    <string name="work_hours_label">Plage Horaire d\'Activation</string>
+    <string name="start_hour_hint">Début (H)</string>
+    <string name="end_hour_hint">Fin (H)</string>
+    <string name="delay_minutes_hint">Délai entre 2 SMS (min)</string>
+    
+    <string name="vacation_mode_label">Mode Congés / Vacances</string>
+    
+    <string name="msg_work_label">Message : En Consultation</string>
+    <string name="msg_off_label">Message : Hors Horaires</string>
+    <string name="msg_vacation_label">Message : Congés</string>
+    
+    <string name="settings_title">Configuration &amp; Messages</string>
+    <string name="generate_all_templates_button">Générer les modèles</string>
+    <string name="save_settings_button">Tout Enregistrer</string>
+    
+    <string name="template_work">Bonjour, je suis %1$s. En consultation, je ne peux répondre. RDV sur: %2$s</string>
+    <string name="template_off">Bonjour, je suis %1$s. Le cabinet est actuellement fermé. Vous pouvez prendre RDV sur: %2$s</string>
+    <string name="template_vacation">Bonjour, je suis %1$s. Je suis actuellement en congés. Vous pouvez consulter mes disponibilités sur: %2$s</string>
+
+    <string name="tester_mode_button">Activer Mode Testeur</string>
+    <string name="tester_mode_active">Mode Testeur Activé</string>
+    <string name="tester_mode_inactive">Mode Testeur Désactivé</string>
+    <string name="save_practitioner_button">Enregistrer</string>
+    
     <string name="unknown_only_checkbox">Répondre aux numéros inconnus seulement</string>
     <string name="force_send_checkbox">Forcer l\'envoi (pour tests)</string>
     <string name="patient_number_hint">Numéro du patient</string>
     <string name="send_sms_to_patient_button">Envoyer SMS au patient</string>
     <string name="check_permissions_button">Vérifier les autorisations</string>
     <string name="history_button">Historique</string>
-    <string name="messages_button">Messages</string>
+    <string name="settings_button">Réglages</string>
     <string name="logs_button">Logs</string>
     <string name="test_short_sms_button">Test Court</string>
     <string name="test_long_sms_button">Test Long</string>

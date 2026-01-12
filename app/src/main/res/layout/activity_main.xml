@@ -14,33 +14,50 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <!-- Practitioner Selection -->
-        <TextView
-            android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/logo_osteolink" />
+
+        <!-- Practitioner Name -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/practitioner_selection_title" />
-        <RadioGroup
-            android:id="@+id/practitionerRadioGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/quentinRadioButton"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+            
+            <EditText
+                android:id="@+id/practitionerNameEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/practitioner_name_hint"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/savePractitionerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/practitioner_quentin" />
-            <RadioButton
-                android:id="@+id/lauraRadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/practitioner_laura" />
-        </RadioGroup>
+                android:text="@string/save_practitioner_button" />
+        </LinearLayout>
+
+        <Switch
+            android:id="@+id/vacationModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="8dp"
+            android:text="@string/vacation_mode_label"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
 
         <CheckBox
             android:id="@+id/unknownOnlyCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/unknown_only_checkbox" />
 
         <CheckBox
@@ -49,6 +66,30 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/force_send_checkbox" />
+
+        <!-- Dashboard -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:padding="12dp"
+            android:background="#F5F5F5">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_title"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="#3F51B5"/>
+            <TextView
+                android:id="@+id/smsSentTodayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SMS envoyés aujourd'hui : 0"
+                android:layout_marginTop="4dp"
+                android:textSize="16sp"/>
+        </LinearLayout>
 
         <!-- Manual SMS -->
         <LinearLayout
@@ -69,12 +110,23 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/send_sms_to_patient_button" />
+            
+            <Button
+                android:id="@+id/testerModeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/tester_mode_button"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <LinearLayout
+                android:id="@+id/testButtonsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
                 <Button
                     android:id="@+id/testShortSmsButton"
                     android:layout_width="wrap_content"
@@ -124,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:text="@string/messages_button" />
+                android:text="@string/settings_button" />
 
             <Button
                 android:id="@+id/logsButton"
