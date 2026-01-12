@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">OsteolinkSMS</string>
+    <string name="app_name">OsteoLinkSMS</string>
+
+    <string name="history_title">Historique des événements</string>
+    <string name="history_clear_button">Effacer l\'historique</string>
 </resources>
