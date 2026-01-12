@@ -8,7 +8,7 @@
         android:id="@+id/historyTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Historique des envois"
+        android:text="@string/history_title"
         android:textSize="20sp"
         android:layout_marginBottom="16dp" />
 
@@ -25,6 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Effacer l'historique" />
+        android:text="@string/history_clear_button" />
 
 </RelativeLayout>

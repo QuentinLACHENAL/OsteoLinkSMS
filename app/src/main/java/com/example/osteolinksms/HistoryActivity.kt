@@ -25,7 +25,7 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun loadHistory() {
-        val history = HistoryManager.getHistory(this).split("\n").filter { it.isNotBlank() }
+        val history = HistoryManager.getHistory(this)
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, history)
         historyListView.adapter = adapter
     }

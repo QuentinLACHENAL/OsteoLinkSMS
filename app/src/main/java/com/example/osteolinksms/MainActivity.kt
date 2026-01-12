@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                 val smsManager = getSystemService(SmsManager::class.java)
                 smsManager.sendTextMessage(phoneNumber, null, message, null, null)
                 Toast.makeText(this, "SMS envoyé au $phoneNumber", Toast.LENGTH_SHORT).show()
-                HistoryManager.addNumberToHistory(this, phoneNumber)
+                HistoryManager.addHistoryEntry(this, "SMS manuel envoyé à $phoneNumber")
                 NotificationManager.showSmsSentNotification(this, phoneNumber)
             } catch (e: Exception) {
                 Toast.makeText(this, "Erreur lors de l'envoi du SMS", Toast.LENGTH_SHORT).show()
