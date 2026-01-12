@@ -28,6 +28,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".LogsActivity" />
+        <activity android:name=".EditMessagesActivity" />
+        <activity android:name=".HistoryActivity" />
+
         <receiver android:name=".CallReceiver"
             android:exported="true">
             <intent-filter>

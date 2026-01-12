@@ -8,25 +8,28 @@ import android.provider.CallLog
 import android.provider.ContactsContract
 import android.telephony.SmsManager
 import android.telephony.TelephonyManager
-import android.util.Log
 
 class CallReceiver : BroadcastReceiver() {
 
     private var wasRinging = false
 
     override fun onReceive(context: Context, intent: Intent) {
+        Logger.log(context, "BroadcastReceiver onReceive, action: ${intent.action}")
+
         if (intent.action != TelephonyManager.ACTION_PHONE_STATE_CHANGED) {
             return
         }
 
         val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
-        Log.d("CallReceiver", "State: $state")
+        Logger.log(context, "Telephony state changed: $state")
 
         when (state) {
             TelephonyManager.EXTRA_STATE_RINGING -> {
                 wasRinging = true
+                Logger.log(context, "State is RINGING. `wasRinging` is now true.")
             }
             TelephonyManager.EXTRA_STATE_IDLE -> {
+                Logger.log(context, "State is IDLE. `wasRinging` is $wasRinging.")
                 if (wasRinging) {
                     wasRinging = false
                     checkLastCall(context)
@@ -34,104 +37,93 @@ class CallReceiver : BroadcastReceiver() {
             }
             TelephonyManager.EXTRA_STATE_OFFHOOK -> {
                 wasRinging = false
+                Logger.log(context, "State is OFFHOOK. `wasRinging` is now false.")
             }
         }
     }
 
     @SuppressLint("Range")
     private fun checkLastCall(context: Context) {
-        val contentResolver = context.contentResolver
-        val projection = arrayOf(
-            CallLog.Calls.NUMBER,
-            CallLog.Calls.TYPE,
-            CallLog.Calls.DATE
-        )
-        val sortOrder = CallLog.Calls.DATE + " DESC"
+        Logger.log(context, "Checking last call...")
 
         try {
-            contentResolver.query(
-                CallLog.Calls.CONTENT_URI,
-                projection,
-                null,
-                null,
-                sortOrder
+            context.contentResolver.query(
+                CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC"
             )?.use { cursor ->
                 if (cursor.moveToFirst()) {
-                    val numberIndex = cursor.getColumnIndex(CallLog.Calls.NUMBER)
-                    val typeIndex = cursor.getColumnIndex(CallLog.Calls.TYPE)
-                    val dateIndex = cursor.getColumnIndex(CallLog.Calls.DATE)
+                    val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
+                    val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
+                    val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
+                    val timeSinceCall = System.currentTimeMillis() - date
 
-                    if (numberIndex == -1 || typeIndex == -1 || dateIndex == -1) {
-                        Log.e("CallReceiver", "A column was not found in the cursor.")
-                        return
+                    Logger.log(context, "Last call: num=$number, type=$type, recent=${timeSinceCall}ms ago")
+
+                    if (type == CallLog.Calls.MISSED_TYPE && timeSinceCall < 5000) {
+                        handleMissedCall(context, number)
                     }
-
-                    val type = cursor.getInt(typeIndex)
-                    val callDate = cursor.getLong(dateIndex)
-                    val phoneNumber = cursor.getString(numberIndex)
-
-                    val isMissedCall = type == CallLog.Calls.MISSED_TYPE
-                    val isRecent = (System.currentTimeMillis() - callDate) < 5000 // 5 seconds
-
-                    Log.d("CallReceiver", "Last call: type=$type, recent=$isRecent")
-
-
-                    if (isMissedCall && isRecent) {
-                        val sharedPreferences = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-                        val unknownOnly = sharedPreferences.getBoolean(MainActivity.KEY_UNKNOWN_ONLY, false)
-
-                        if (unknownOnly) {
-                            if (isUnknownNumber(context, phoneNumber)) {
-                                sendSms(context, phoneNumber)
-                                Log.i("CallReceiver", "Missed call from unknown number $phoneNumber. Sending SMS.")
-                            } else {
-                                Log.i("CallReceiver", "Missed call from known number $phoneNumber, but option is for unknown only.")
-                            }
-                        } else {
-                            sendSms(context, phoneNumber)
-                            Log.i("CallReceiver", "Missed call from $phoneNumber. Sending SMS.")
-                        }
-                    }
+                } else {
+                    Logger.log(context, "Could not read last call. Cursor is empty.")
                 }
             }
         } catch (e: SecurityException) {
-            Log.e("CallReceiver", "SecurityException: Check READ_CALL_LOG permission.", e)
+            Logger.log(context, "SecurityException reading call log: ${e.message}")
         } catch (e: Exception) {
-            Log.e("CallReceiver", "Error checking last call", e)
+            Logger.log(context, "Exception reading call log: ${e.message}")
         }
     }
 
+    private fun handleMissedCall(context: Context, phoneNumber: String) {
+        val sharedPreferences = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val unknownOnly = sharedPreferences.getBoolean(MainActivity.KEY_UNKNOWN_ONLY, false)
+
+        if (unknownOnly && !isUnknownNumber(context, phoneNumber)) {
+            Logger.log(context, "SMS not sent: call is from a known number and option is set to unknown only.")
+            return
+        }
+
+        val selectedPractitionerId = sharedPreferences.getInt(MainActivity.KEY_SELECTED_PRACTITIONER_ID, MainActivity.ID_QUENTIN)
+        val messageKey = if (selectedPractitionerId == MainActivity.ID_QUENTIN) {
+            EditMessagesActivity.KEY_QUENTIN_MESSAGE
+        } else {
+            EditMessagesActivity.KEY_LAURA_MESSAGE
+        }
+
+        val message = sharedPreferences.getString(messageKey, null)
+
+        if (message.isNullOrEmpty()) {
+            Logger.log(context, "SMS not sent: message for the selected practitioner is empty.")
+            return
+        }
+
+        sendSms(context, phoneNumber, message)
+    }
+
     private fun isUnknownNumber(context: Context, phoneNumber: String): Boolean {
+        Logger.log(context, "Checking if '$phoneNumber' is in contacts.")
         val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
         val selection = "${ContactsContract.CommonDataKinds.Phone.NUMBER} = ?"
         val selectionArgs = arrayOf(phoneNumber)
 
         return try {
-            context.contentResolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
-                !cursor.moveToFirst()
+            context.contentResolver.query(uri, projection, selection, selectionArgs, null)?.use {
+                val isKnown = it.moveToFirst()
+                Logger.log(context, "Contact lookup successful. Number is known: $isKnown")
+                !isKnown
             } ?: true
         } catch (e: Exception) {
-            Log.e("CallReceiver", "Error checking if number is unknown", e)
+            Logger.log(context, "Exception checking contacts: ${e.message}")
             true // Assume unknown in case of error
         }
     }
 
-    private fun sendSms(context: Context, phoneNumber: String) {
-        val sharedPreferences = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val message = sharedPreferences.getString(MainActivity.KEY_SELECTED_MESSAGE, null)
-
-        if (message == null) {
-            Log.w("CallReceiver", "No message selected, not sending SMS.")
-            return
-        }
-
+    private fun sendSms(context: Context, phoneNumber: String, message: String) {
         try {
-            val smsManager = SmsManager.getDefault()
-            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
-            Log.i("CallReceiver", "SMS sent to $phoneNumber")
+            SmsManager.getDefault().sendTextMessage(phoneNumber, null, message, null, null)
+            Logger.log(context, "SMS sent to $phoneNumber.")
+            HistoryManager.addNumberToHistory(context, phoneNumber)
         } catch (e: Exception) {
-            Log.e("CallReceiver", "Error sending SMS", e)
+            Logger.log(context, "Error sending SMS: ${e.message}")
         }
     }
 }

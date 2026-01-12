@@ -1,57 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:padding="16dp"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/logo_osteolink"
-        android:contentDescription="@string/app_name"
-        android:layout_marginBottom="24dp"/>
-
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sélectionner un praticien"
-        android:textSize="20sp"
-        android:layout_marginBottom="24dp"/>
-
-    <Button
-        android:id="@+id/quentinButton"
+    <LinearLayout
+        android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Quentin Lachenal" />
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/lauraButton"
+        <!-- Practitioner Selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sélectionner le praticien actif" />
+        <RadioGroup
+            android:id="@+id/practitionerRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/quentinRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quentin" />
+            <RadioButton
+                android:id="@+id/lauraRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Laura" />
+        </RadioGroup>
+
+        <CheckBox
+            android:id="@+id/unknownOnlyCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Répondre aux numéros inconnus seulement" />
+
+        <!-- Manual SMS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <EditText
+                android:id="@+id/phoneNumberEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Numéro du patient"                android:inputType="phone" />
+
+            <Button
+                android:id="@+id/sendSmsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Envoyer SMS au patient" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Laura Hugues" />
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
 
-    <TextView
-        android:id="@+id/selectionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:textSize="16sp"
-        tools:text="Sélection actuelle : Quentin Lachenal"/>
+        <Button
+            android:id="@+id/checkPermissionsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vérifier les autorisations" />
 
-    <CheckBox
-        android:id="@+id/unknownOnlyCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:text="Envoyer uniquement aux numéros inconnus" />
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/historyButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Historique" />
+
+            <Button
+                android:id="@+id/editMessagesButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Messages" />
+
+            <Button
+                android:id="@+id/logsButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Logs" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
