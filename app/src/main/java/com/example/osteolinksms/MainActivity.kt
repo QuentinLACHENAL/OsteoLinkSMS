@@ -44,12 +44,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var practitionerRadioGroup: RadioGroup
     private lateinit var unknownOnlyCheckBox: CheckBox
+    private lateinit var forceSendCheckBox: CheckBox
     private lateinit var phoneNumberEditText: EditText
 
     companion object {
         const val PREFS_NAME = "OsteoLinkPrefs"
         const val KEY_SELECTED_PRACTITIONER_ID = "selectedPractitionerId"
         const val KEY_UNKNOWN_ONLY = "unknownOnly"
+        const val KEY_FORCE_SEND = "forceSend"
         const val ID_QUENTIN = 1
         const val ID_LAURA = 2
     }
@@ -61,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         practitionerRadioGroup = findViewById(R.id.practitionerRadioGroup)
         unknownOnlyCheckBox = findViewById(R.id.unknownOnlyCheckBox)
+        forceSendCheckBox = findViewById(R.id.forceSendCheckBox)
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText)
 
         NotificationManager.createNotificationChannel(this)
@@ -118,6 +121,11 @@ class MainActivity : AppCompatActivity() {
         unknownOnlyCheckBox.setOnCheckedChangeListener { _, isChecked ->
             sharedPreferences.edit { putBoolean(KEY_UNKNOWN_ONLY, isChecked) }
         }
+
+        forceSendCheckBox.isChecked = sharedPreferences.getBoolean(KEY_FORCE_SEND, false)
+        forceSendCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit { putBoolean(KEY_FORCE_SEND, isChecked) }
+        }
     }
 
     private fun setupManualSms() {
@@ -139,8 +147,16 @@ class MainActivity : AppCompatActivity() {
 
         if (!message.isNullOrEmpty()) {
             try {
-                val sentIntent = Intent(CallReceiver.SENT_SMS_ACTION)
-                val sentPI = PendingIntent.getBroadcast(this, 1, sentIntent, PendingIntent.FLAG_IMMUTABLE)
+                val sentIntent = Intent(this, SmsResultReceiver::class.java)
+                sentIntent.action = "com.example.osteolinksms.SMS_SENT"
+
+                val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    0
+                }
+
+                val sentPI = PendingIntent.getBroadcast(this, System.currentTimeMillis().toInt(), sentIntent, flags)
 
                 val smsManager = getSystemService(SmsManager::class.java)
                 smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)

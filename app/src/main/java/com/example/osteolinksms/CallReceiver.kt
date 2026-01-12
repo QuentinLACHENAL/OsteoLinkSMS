@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.provider.CallLog
 import android.provider.ContactsContract
 import android.telephony.SmsManager
@@ -14,9 +15,13 @@ import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import com.example.osteolinksms.MainActivity.Companion.ID_QUENTIN
+import com.example.osteolinksms.MainActivity.Companion.KEY_FORCE_SEND
 import com.example.osteolinksms.MainActivity.Companion.KEY_SELECTED_PRACTITIONER_ID
 import com.example.osteolinksms.MainActivity.Companion.KEY_UNKNOWN_ONLY
 import com.example.osteolinksms.MainActivity.Companion.PREFS_NAME
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class CallReceiver : BroadcastReceiver() {
 
@@ -26,7 +31,7 @@ class CallReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Logger.log(context, "BroadcastReceiver onReceive, action: ${intent.action}")
+        Logger.log(context, "CallReceiver onReceive, action: ${intent.action}")
 
         if (intent.action != TelephonyManager.ACTION_PHONE_STATE_CHANGED) {
             return
@@ -103,9 +108,20 @@ class CallReceiver : BroadcastReceiver() {
     private fun handleMissedCall(context: Context, phoneNumber: String) {
         Logger.log(context, "handleMissedCall for number: $phoneNumber")
         val sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val unknownOnly = sharedPreferences.getBoolean(KEY_UNKNOWN_ONLY, false)
-        Logger.log(context, "Option 'unknown only' is set to: $unknownOnly")
 
+        if (!isMobileNumber(phoneNumber)) {
+            Logger.log(context, "SMS not sent: $phoneNumber is not a mobile number.")
+            HistoryManager.addHistoryEntry(context, "Appel manqué ignoré (fixe) : $phoneNumber")
+            return
+        }
+
+        val forceSend = sharedPreferences.getBoolean(KEY_FORCE_SEND, false)
+        if (!forceSend && hasRecentSms(context, phoneNumber)) {
+            Logger.log(context, "SMS not sent: An SMS was already sent to $phoneNumber recently.")
+            return
+        }
+
+        val unknownOnly = sharedPreferences.getBoolean(KEY_UNKNOWN_ONLY, false)
         if (unknownOnly && !isUnknownNumber(context, phoneNumber)) {
             Logger.log(context, "SMS not sent: call is from a known number and option is set to unknown only.")
             return
@@ -127,6 +143,30 @@ class CallReceiver : BroadcastReceiver() {
 
         Logger.log(context, "Message to send: '$message'")
         sendSms(context, phoneNumber, message)
+    }
+
+    private fun isMobileNumber(phoneNumber: String): Boolean {
+        return phoneNumber.startsWith("+336") || phoneNumber.startsWith("+337") || phoneNumber.startsWith("06") || phoneNumber.startsWith("07")
+    }
+
+    private fun hasRecentSms(context: Context, phoneNumber: String): Boolean {
+        val history = HistoryManager.getHistory(context)
+        val fiveMinutesAgo = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(5)
+
+        return history.any { log ->
+            val cleanLog = log.substringAfter(" - ")
+            val sentToThisNumber = cleanLog.contains("envoyée à $phoneNumber") || cleanLog.contains("manuel à $phoneNumber")
+
+            if (sentToThisNumber) {
+                try {
+                    val logTimestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(log.substringBefore(" - "))?.time ?: 0
+                    return@any logTimestamp > fiveMinutesAgo
+                } catch (e: Exception) {
+                    return@any false
+                }
+            }
+            false
+        }
     }
 
     private fun isUnknownNumber(context: Context, phoneNumber: String): Boolean {
@@ -159,8 +199,15 @@ class CallReceiver : BroadcastReceiver() {
         }
 
         try {
-            val sentIntent = Intent(SENT_SMS_ACTION)
-            val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), sentIntent, PendingIntent.FLAG_IMMUTABLE)
+            val sentIntent = Intent(context, SmsResultReceiver::class.java)
+            sentIntent.action = SENT_SMS_ACTION
+
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                0
+            }
+            val sentPI = PendingIntent.getBroadcast(context, System.currentTimeMillis().toInt(), sentIntent, flags)
 
             val smsManager = context.getSystemService(SmsManager::class.java)
             smsManager.sendTextMessage(phoneNumber, null, message, sentPI, null)
