@@ -59,10 +59,20 @@ object SmsSender {
 
         return if (subId != SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
             Logger.log(context, "SmsSender: Using Subscription ID: $subId")
-            context.getSystemService(SmsManager::class.java).createForSubscriptionId(subId)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                context.getSystemService(SmsManager::class.java).createForSubscriptionId(subId)
+            } else {
+                @Suppress("DEPRECATION")
+                SmsManager.getSmsManagerForSubscriptionId(subId)
+            }
         } else {
-            Logger.log(context, "SmsSender: Using defaultSmsManager (no valid subId).")
-            context.getSystemService(SmsManager::class.java)
+            Logger.log(context, "SmsSender: Using default SmsManager (no valid subId).")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                context.getSystemService(SmsManager::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                SmsManager.getDefault()
+            }
         }
     }
 
