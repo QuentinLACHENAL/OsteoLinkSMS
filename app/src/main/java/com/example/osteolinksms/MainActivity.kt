@@ -95,13 +95,31 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        setupUI()
+                setupUI()
+
+
 
         
 
-        // --- Check for Remote News/Updates ---
 
-        NewsChecker.checkNews(this)
+
+                // --- Check Registration (Collect Email) ---
+
+
+
+                RegistrationManager.checkRegistration(this)
+
+
+
+                
+
+
+
+                // --- Check for Remote News/Updates ---
+
+
+
+                NewsChecker.checkNews(this)
 
 
 
