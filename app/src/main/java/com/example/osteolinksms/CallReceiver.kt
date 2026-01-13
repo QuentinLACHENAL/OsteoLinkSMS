@@ -130,9 +130,9 @@ class CallReceiver : BroadcastReceiver() {
         Logger.log(context, "handleMissedCall for number: $phoneNumber")
         val sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-        if (!isMobileNumber(phoneNumber)) {
-            Logger.log(context, "SMS not sent: $phoneNumber is not a mobile number.")
-            HistoryManager.addHistoryEntry(context, "Appel manqué ignoré (fixe) : $phoneNumber")
+        if (!isMobileNumber(context, phoneNumber)) {
+            Logger.log(context, "SMS not sent: $phoneNumber is not a recognized mobile number.")
+            HistoryManager.addHistoryEntry(context, "Appel manqué ignoré (fixe/étranger) : $phoneNumber")
             return
         }
 
@@ -196,8 +196,23 @@ class CallReceiver : BroadcastReceiver() {
         sendSms(context, phoneNumber, message)
     }
 
-    private fun isMobileNumber(phoneNumber: String): Boolean {
-        return phoneNumber.startsWith("+336") || phoneNumber.startsWith("+337") || phoneNumber.startsWith("06") || phoneNumber.startsWith("07")
+    private fun isMobileNumber(context: Context, phoneNumber: String): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val cleanNumber = phoneNumber.replace(" ", "")
+
+        val allowFR = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_FR, true)
+        val allowBE = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_BE, false)
+        val allowLU = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_LU, false)
+        val allowDE = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_DE, false)
+        val allowCH = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_CH, false)
+
+        if (allowFR && (cleanNumber.startsWith("+336") || cleanNumber.startsWith("+337") || cleanNumber.startsWith("06") || cleanNumber.startsWith("07"))) return true
+        if (allowBE && (cleanNumber.startsWith("+324") || cleanNumber.startsWith("00324"))) return true
+        if (allowLU && (cleanNumber.startsWith("+3526") || cleanNumber.startsWith("003526"))) return true
+        if (allowDE && (cleanNumber.startsWith("+491") || cleanNumber.startsWith("00491"))) return true
+        if (allowCH && (cleanNumber.startsWith("+417") || cleanNumber.startsWith("00417"))) return true
+
+        return false
     }
     
     private fun isInWhitelist(number: String, whitelist: String): Boolean {

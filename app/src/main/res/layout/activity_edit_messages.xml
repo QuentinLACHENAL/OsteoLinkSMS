@@ -149,6 +149,26 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Pays autorisés (Mobiles)"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+            
+            <CheckBox android:id="@+id/checkCountryFR" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="France (+33)" android:checked="true"/>
+            <CheckBox android:id="@+id/checkCountryBE" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Belgique (+32)"/>
+            <CheckBox android:id="@+id/checkCountryLU" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Luxembourg (+352)"/>
+            <CheckBox android:id="@+id/checkCountryDE" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Allemagne (+49)"/>
+            <CheckBox android:id="@+id/checkCountryCH" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Suisse (+41)"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/settings_section_messages"
             android:textSize="20sp"
             android:textStyle="bold"

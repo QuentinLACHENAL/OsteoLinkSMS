@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var testButtonsLayout: LinearLayout
     private lateinit var testerModeButton: Button
     private lateinit var smsSentTodayTextView: TextView
+    private lateinit var checkPermissionsButton: Button
 
     companion object {
         const val PREFS_NAME = "OsteoLinkPrefs"
@@ -77,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         testButtonsLayout = findViewById(R.id.testButtonsLayout)
         testerModeButton = findViewById(R.id.testerModeButton)
         smsSentTodayTextView = findViewById(R.id.smsSentTodayTextView)
+        checkPermissionsButton = findViewById(R.id.checkPermissionsButton)
 
         NotificationManager.createNotificationChannel(this)
 
@@ -140,6 +142,7 @@ class MainActivity : AppCompatActivity() {
         // Hide test buttons initially
         testButtonsLayout.isVisible = false
         forceSendCheckBox.isVisible = false
+        checkPermissionsButton.isVisible = true
         updateTesterModeButtonText(false)
     }
 
@@ -180,12 +183,16 @@ class MainActivity : AppCompatActivity() {
         testerModeButton.setOnClickListener {
             val isVisible = testButtonsLayout.isVisible
             if (isVisible) {
+                // Turning OFF Tester Mode
                 testButtonsLayout.isVisible = false
                 forceSendCheckBox.isVisible = false
+                checkPermissionsButton.isVisible = true
                 updateTesterModeButtonText(false)
             } else {
+                // Turning ON Tester Mode
                 testButtonsLayout.isVisible = true
                 forceSendCheckBox.isVisible = true
+                checkPermissionsButton.isVisible = false
                 updateTesterModeButtonText(true)
             }
         }
@@ -235,7 +242,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
 
-        findViewById<Button>(R.id.checkPermissionsButton).setOnClickListener {
+        checkPermissionsButton.setOnClickListener {
             checkAndNotifyPermissions()
         }
     }

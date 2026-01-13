@@ -33,10 +33,22 @@ class EditMessagesActivity : AppCompatActivity() {
         const val KEY_SIM_SLOT = "simSlot" // -1 = Default, 0 = Slot 1, 1 = Slot 2
         const val KEY_WORK_DAYS = "workDays" // Stored as "1,2,3,4,5" (Calendar.MONDAY is 2)
         
+        const val KEY_COUNTRY_FR = "countryFR"
+        const val KEY_COUNTRY_BE = "countryBE"
+        const val KEY_COUNTRY_LU = "countryLU"
+        const val KEY_COUNTRY_DE = "countryDE"
+        const val KEY_COUNTRY_CH = "countryCH"
+        
         const val KEY_MSG_WORK = "msgWork"
         const val KEY_MSG_OFF = "msgOff"
         const val KEY_MSG_VACATION = "msgVacation"
     }
+
+    private lateinit var checkCountryFR: CheckBox
+    private lateinit var checkCountryBE: CheckBox
+    private lateinit var checkCountryLU: CheckBox
+    private lateinit var checkCountryDE: CheckBox
+    private lateinit var checkCountryCH: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +66,13 @@ class EditMessagesActivity : AppCompatActivity() {
         delayEditText = findViewById(R.id.delayEditText)
         whitelistEditText = findViewById(R.id.whitelistEditText)
         simRadioGroup = findViewById(R.id.simRadioGroup)
+        
+        checkCountryFR = findViewById(R.id.checkCountryFR)
+        checkCountryBE = findViewById(R.id.checkCountryBE)
+        checkCountryLU = findViewById(R.id.checkCountryLU)
+        checkCountryDE = findViewById(R.id.checkCountryDE)
+        checkCountryCH = findViewById(R.id.checkCountryCH)
+
         msgWorkEditText = findViewById(R.id.msgWorkEditText)
         msgOffEditText = findViewById(R.id.msgOffEditText)
         msgVacationEditText = findViewById(R.id.msgVacationEditText)
@@ -81,6 +100,12 @@ class EditMessagesActivity : AppCompatActivity() {
             1 -> simRadioGroup.check(R.id.sim2Radio)
             else -> simRadioGroup.check(R.id.simDefaultRadio)
         }
+        
+        checkCountryFR.isChecked = prefs.getBoolean(KEY_COUNTRY_FR, true)
+        checkCountryBE.isChecked = prefs.getBoolean(KEY_COUNTRY_BE, false)
+        checkCountryLU.isChecked = prefs.getBoolean(KEY_COUNTRY_LU, false)
+        checkCountryDE.isChecked = prefs.getBoolean(KEY_COUNTRY_DE, false)
+        checkCountryCH.isChecked = prefs.getBoolean(KEY_COUNTRY_CH, false)
 
         val workDays = prefs.getString(KEY_WORK_DAYS, "2,3,4,5,6")?.split(",") ?: listOf("2","3","4","5","6")
         val calendarDays = listOf("2", "3", "4", "5", "6", "7", "1") // Mon, Tue, Wed, Thu, Fri, Sat, Sun
@@ -126,6 +151,11 @@ class EditMessagesActivity : AppCompatActivity() {
             .putInt(KEY_DELAY_MINUTES, delay)
             .putString(KEY_WHITELIST, whitelistEditText.text.toString())
             .putInt(KEY_SIM_SLOT, simSlot)
+            .putBoolean(KEY_COUNTRY_FR, checkCountryFR.isChecked)
+            .putBoolean(KEY_COUNTRY_BE, checkCountryBE.isChecked)
+            .putBoolean(KEY_COUNTRY_LU, checkCountryLU.isChecked)
+            .putBoolean(KEY_COUNTRY_DE, checkCountryDE.isChecked)
+            .putBoolean(KEY_COUNTRY_CH, checkCountryCH.isChecked)
             .putString(KEY_WORK_DAYS, selectedDays)
             .putString(KEY_MSG_WORK, msgWorkEditText.text.toString())
             .putString(KEY_MSG_OFF, msgOffEditText.text.toString())
