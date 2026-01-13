@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var unknownOnlyCheckBox: CheckBox
     private lateinit var forceSendCheckBox: CheckBox
     private lateinit var phoneNumberEditText: EditText
-    private lateinit var testButtonsLayout: LinearLayout
+    private lateinit var testerContainer: LinearLayout
     private lateinit var testerModeButton: Button
     private lateinit var smsSentTodayTextView: TextView
     private lateinit var checkPermissionsButton: Button
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         unknownOnlyCheckBox = findViewById(R.id.unknownOnlyCheckBox)
         forceSendCheckBox = findViewById(R.id.forceSendCheckBox)
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText)
-        testButtonsLayout = findViewById(R.id.testButtonsLayout)
+        testerContainer = findViewById(R.id.testerContainer)
         testerModeButton = findViewById(R.id.testerModeButton)
         smsSentTodayTextView = findViewById(R.id.smsSentTodayTextView)
         checkPermissionsButton = findViewById(R.id.checkPermissionsButton)
@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         forceSendCheckBox.isChecked = sharedPreferences.getBoolean(KEY_FORCE_SEND, false)
         
         // Hide test buttons initially
-        testButtonsLayout.isVisible = false
+        testerContainer.isVisible = false
         forceSendCheckBox.isVisible = false
         checkPermissionsButton.isVisible = true
         updateTesterModeButtonText(false)
@@ -320,16 +320,16 @@ class MainActivity : AppCompatActivity() {
 
         // Tester Mode Toggle
         testerModeButton.setOnClickListener {
-            val isVisible = testButtonsLayout.isVisible
+            val isVisible = testerContainer.isVisible
             if (isVisible) {
                 // Turning OFF Tester Mode
-                testButtonsLayout.isVisible = false
+                testerContainer.isVisible = false
                 forceSendCheckBox.isVisible = false
                 checkPermissionsButton.isVisible = true
                 updateTesterModeButtonText(false)
             } else {
                 // Turning ON Tester Mode
-                testButtonsLayout.isVisible = true
+                testerContainer.isVisible = true
                 forceSendCheckBox.isVisible = true
                 checkPermissionsButton.isVisible = false
                 updateTesterModeButtonText(true)
