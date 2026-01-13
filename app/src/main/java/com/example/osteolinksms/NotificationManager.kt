@@ -64,6 +64,12 @@ object NotificationManager {
     }
 
     fun showSmsSentNotification(context: Context, phoneNumber: String) {
+        // Check user preference
+        val prefs = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val showNotifs = prefs.getBoolean(EditMessagesActivity.KEY_NOTIFICATIONS_SMS, true)
+        
+        if (!showNotifs) return
+
         // Intent to open history when clicked
         val intent = Intent(context, HistoryActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

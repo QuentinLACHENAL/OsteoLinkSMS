@@ -46,6 +46,8 @@ class EditMessagesActivity : AppCompatActivity() {
         const val KEY_MSG_WORK = "msgWork"
         const val KEY_MSG_OFF = "msgOff"
         const val KEY_MSG_VACATION = "msgVacation"
+        
+        const val KEY_NOTIFICATIONS_SMS = "notificationsSmsEnabled"
     }
 
     private lateinit var checkCountryFR: CheckBox
@@ -56,6 +58,7 @@ class EditMessagesActivity : AppCompatActivity() {
     private lateinit var checkCountryES: CheckBox
 
     private lateinit var includeBookingLinkCheckBox: CheckBox
+    private lateinit var notificationsEnabledCheckBox: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +73,7 @@ class EditMessagesActivity : AppCompatActivity() {
         practitionerNameEditText = findViewById(R.id.practitionerNameEditText)
         doctolibIdEditText = findViewById(R.id.doctolibIdEditText)
         includeBookingLinkCheckBox = findViewById(R.id.includeBookingLinkCheckBox)
+        notificationsEnabledCheckBox = findViewById(R.id.notificationsEnabledCheckBox)
 
         startHourEditText = findViewById(R.id.startHourEditText)
         endHourEditText = findViewById(R.id.endHourEditText)
@@ -102,6 +106,7 @@ class EditMessagesActivity : AppCompatActivity() {
         practitionerNameEditText.setText(prefs.getString(MainActivity.KEY_PRACTITIONER_NAME, ""))
         doctolibIdEditText.setText(prefs.getString(KEY_DOCTOLIB_ID, ""))
         includeBookingLinkCheckBox.isChecked = prefs.getBoolean(KEY_INCLUDE_LINK, true)
+        notificationsEnabledCheckBox.isChecked = prefs.getBoolean(KEY_NOTIFICATIONS_SMS, true)
 
         startHourEditText.setText(prefs.getInt(KEY_START_HOUR, 8).toString())
         endHourEditText.setText(prefs.getInt(KEY_END_HOUR, 19).toString())
@@ -170,6 +175,7 @@ class EditMessagesActivity : AppCompatActivity() {
             .putString(MainActivity.KEY_PRACTITIONER_NAME, practitionerNameEditText.text.toString())
             .putString(KEY_DOCTOLIB_ID, doctolibIdEditText.text.toString())
             .putBoolean(KEY_INCLUDE_LINK, includeBookingLinkCheckBox.isChecked)
+            .putBoolean(KEY_NOTIFICATIONS_SMS, notificationsEnabledCheckBox.isChecked)
             .putInt(KEY_START_HOUR, startHour)
             .putInt(KEY_END_HOUR, endHour)
             .putInt(KEY_DELAY_MINUTES, delay)

@@ -22,11 +22,16 @@
             android:padding="16dp">
 
             <ImageView
+                android:id="@+id/btnLogoOsteoLink"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginBottom="16dp"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/logo_app_transparent" />
+                android:src="@drawable/logo_app_transparent"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true" />
 
             <Button
                 android:id="@+id/btnUpdateAvailable"

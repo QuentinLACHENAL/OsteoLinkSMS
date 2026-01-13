@@ -48,6 +48,14 @@
             android:layout_height="wrap_content"
             android:text="@string/include_booking_link_label"
             android:checked="true"
+            android:layout_marginBottom="8dp"/>
+
+        <CheckBox
+            android:id="@+id/notificationsEnabledCheckBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recevoir une notif. à chaque SMS envoyé"
+            android:checked="true"
             android:layout_marginBottom="16dp"/>
 
         <TextView

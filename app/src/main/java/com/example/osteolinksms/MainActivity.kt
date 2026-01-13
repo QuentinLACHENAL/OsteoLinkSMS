@@ -389,16 +389,66 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, TutorialActivity::class.java))
         }
 
+        findViewById<android.widget.ImageView>(R.id.btnLogoOsteoLink).setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://osteolink.fr"))
+            startActivity(intent)
+        }
+
         findViewById<TextView>(R.id.btnContactSupport).setOnClickListener {
-            val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:contact@osteolink.fr")
-                putExtra(Intent.EXTRA_SUBJECT, "OsteoLinkSMS : Bug ou Contact")
+            // Ask user if they want to include logs
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Contacter le support")
+                .setMessage("Voulez-vous inclure les derniers logs techniques pour aider au débogage ?\n\n(Rassurez-vous : Les numéros de téléphone seront automatiquement masqués dans les logs envoyés).")
+                .setPositiveButton("Oui, inclure les logs") { _, _ ->
+                    sendSupportEmail(includeLogs = true)
+                }
+                .setNegativeButton("Non, juste un message") { _, _ ->
+                    sendSupportEmail(includeLogs = false)
+                }
+                .show()
+        }
+    }
+
+    private fun sendSupportEmail(includeLogs: Boolean) {
+        // 1. Get App Version safely
+        val pInfo = packageManager.getPackageInfo(packageName, 0)
+        val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            "${pInfo.versionName} (${pInfo.longVersionCode})"
+        } else {
+            @Suppress("DEPRECATION")
+            "${pInfo.versionName} (${pInfo.versionCode})"
+        }
+
+        // 2. Build Info Block
+        val sb = StringBuilder()
+        sb.append("\n\n\n--- Infos Techniques (Ne pas effacer) ---\n")
+        sb.append("App Version: $version\n")
+        sb.append("Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})\n")
+        sb.append("Device: ${Build.MANUFACTURER} ${Build.MODEL}\n")
+
+        // 3. Add Logs if requested
+        if (includeLogs) {
+            sb.append("\n--- Derniers Logs (Anonymisés) ---\n")
+            val allLogs = Logger.getAnonymizedLogs(this)
+            // Take last 2000 chars roughly to avoid Intent limit
+            val truncatedLogs = if (allLogs.length > 2000) {
+                "... " + allLogs.takeLast(2000)
+            } else {
+                allLogs
             }
-            try {
-                startActivity(Intent.createChooser(emailIntent, "Envoyer un email..."))
-            } catch (e: Exception) {
-                Toast.makeText(this, "Aucune application de mail trouvée.", Toast.LENGTH_SHORT).show()
-            }
+            sb.append(truncatedLogs)
+        }
+
+        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:contact@osteolink.fr")
+            putExtra(Intent.EXTRA_SUBJECT, "Support OsteoLinkSMS ($version)")
+            putExtra(Intent.EXTRA_TEXT, "Bonjour,\n\n[Votre message ici]\n$sb")
+        }
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Envoyer un email..."))
+        } catch (e: Exception) {
+            Toast.makeText(this, "Aucune application de mail trouvée.", Toast.LENGTH_SHORT).show()
         }
     }
 
