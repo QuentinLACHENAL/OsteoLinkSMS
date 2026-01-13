@@ -139,8 +139,13 @@ class EditMessagesActivity : AppCompatActivity() {
     private fun generateTemplates() {
         val prefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
         val name = prefs.getString(MainActivity.KEY_PRACTITIONER_NAME, "Votre Nom")
-        val docId = doctolibIdEditText.text.toString().ifEmpty { "votre-id" }
-        val docUrl = "https://www.doctolib.fr/osteopathe/longeville-les-metz/$docId/booking/"
+        val input = doctolibIdEditText.text.toString().trim()
+
+        val docUrl = when {
+            input.isEmpty() -> "https://www.doctolib.fr/"
+            input.startsWith("http") -> input
+            else -> "https://www.doctolib.fr/praticien/$input"
+        }
 
         msgWorkEditText.setText(getString(R.string.template_work, name, docUrl))
         msgOffEditText.setText(getString(R.string.template_off, name, docUrl))

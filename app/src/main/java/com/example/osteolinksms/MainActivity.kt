@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
 
         val isAppEnabled = sharedPreferences.getBoolean(KEY_APP_ENABLED, true)
         masterSwitch.isChecked = isAppEnabled
+        updateMasterSwitchText(isAppEnabled)
 
         // Load checkboxes (Default false)
         vacationModeSwitch.isChecked = sharedPreferences.getBoolean(KEY_VACATION_MODE, false)
@@ -130,6 +131,7 @@ class MainActivity : AppCompatActivity() {
         masterSwitch.setOnCheckedChangeListener { _, isChecked ->
             sharedPreferences.edit { putBoolean(KEY_APP_ENABLED, isChecked) }
             NotificationManager.updateMonitoringNotification(this, isChecked)
+            updateMasterSwitchText(isChecked)
             
             if (isChecked) {
                 Toast.makeText(this, "Application Active", Toast.LENGTH_SHORT).show()
@@ -219,6 +221,14 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.checkPermissionsButton).setOnClickListener {
             checkAndNotifyPermissions()
+        }
+    }
+
+    private fun updateMasterSwitchText(isActive: Boolean) {
+        if (isActive) {
+            masterSwitch.text = getString(R.string.master_switch_active)
+        } else {
+            masterSwitch.text = getString(R.string.master_switch_inactive)
         }
     }
 
