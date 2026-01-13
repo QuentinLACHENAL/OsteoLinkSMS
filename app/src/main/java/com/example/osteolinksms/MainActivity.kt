@@ -430,9 +430,9 @@ class MainActivity : AppCompatActivity() {
         if (includeLogs) {
             sb.append("\n--- Derniers Logs (Anonymisés) ---\n")
             val allLogs = Logger.getAnonymizedLogs(this)
-            // Take last 2000 chars roughly to avoid Intent limit
-            val truncatedLogs = if (allLogs.length > 2000) {
-                "... " + allLogs.takeLast(2000)
+            // Reduce strictly to ~1000 chars to avoid Intent TransactionTooLargeException or Gmail limits
+            val truncatedLogs = if (allLogs.length > 1000) {
+                "... " + allLogs.takeLast(1000)
             } else {
                 allLogs
             }
