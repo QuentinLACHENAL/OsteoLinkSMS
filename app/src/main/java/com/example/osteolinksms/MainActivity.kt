@@ -81,11 +81,27 @@ class MainActivity : AppCompatActivity() {
         NotificationManager.createNotificationChannel(this)
 
         if (!hasPermissions()) {
-            requestPermissions()
+            showPermissionRationale()
         }
 
         setupUI()
         setupListeners()
+    }
+
+    private fun showPermissionRationale() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Autorisations Requises")
+            .setMessage("Pour fonctionner, OsteoLinkSMS a besoin de :\n\n" +
+                    "- 📞 Journal d'appels : Pour détecter les patients qui appellent.\n" +
+                    "- 📩 SMS : Pour envoyer la réponse automatique.\n" +
+                    "- 👥 Contacts : Pour identifier les numéros connus (si option activée).\n" +
+                    "- 🔔 Notifications : Pour vous informer de l'activité.\n\n" +
+                    "Vos données restent 100% locales.")
+            .setPositiveButton("Compris") { _, _ ->
+                requestPermissions()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     override fun onResume() {

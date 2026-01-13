@@ -12,19 +12,36 @@
         android:textSize="20sp"
         android:layout_marginBottom="16dp" />
 
-    <ListView
-        android:id="@+id/historyListView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/historyRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/historyTitle"
-        android:layout_above="@+id/clearHistoryButton"/>
+        android:layout_above="@+id/buttonsLayout"
+        android:layout_marginBottom="8dp"/>
 
-    <Button
-        android:id="@+id/clearHistoryButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/history_clear_button" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/exportHistoryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exporter (CSV)"
+            android:backgroundTint="#4CAF50"
+            android:layout_marginEnd="16dp"/>
+
+        <Button
+            android:id="@+id/clearHistoryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_clear_button"
+            android:backgroundTint="#F44336"/>
+    </LinearLayout>
 
 </RelativeLayout>
