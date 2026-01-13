@@ -21,10 +21,24 @@
     <string name="sms_sent_today_default">SMS envoyés aujourd\'hui : 0</string>
     
     <string name="settings_section_general">Paramètres Généraux</string>
+    <string name="sim_selection_label">Choix de la carte SIM</string>
+    <string name="sim_default">Défaut</string>
+    <string name="sim_1">SIM 1</string>
+    <string name="sim_2">SIM 2</string>
+    
+    <string name="allowed_countries_label">Pays autorisés (Mobiles)</string>
+    <string name="country_fr">France (+33)</string>
+    <string name="country_be">Belgique (+32)</string>
+    <string name="country_lu">Luxembourg (+352)</string>
+    <string name="country_de">Allemagne (+49)</string>
+    <string name="country_ch">Suisse (+41)</string>
+    <string name="country_es">Espagne (+34)</string>
+    
     <string name="settings_section_messages">Configuration des Messages</string>
 
     <string name="practitioner_name_hint">Votre Nom (Praticien)</string>
-    <string name="doctolib_id_hint">ID Doctolib (ex: quentin-lachenal)</string>
+    <string name="doctolib_id_hint">URL Prise de RDV (ex: Doctolib)</string>
+    <string name="include_booking_link_label">Inclure le lien de prise de RDV dans les messages</string>
     <string name="work_hours_label">Plage Horaire d\'Activation</string>
     <string name="start_hour_hint">Début (H)</string>
     <string name="hour_separator">à</string>
@@ -42,9 +56,14 @@
     <string name="generate_all_templates_button">Générer les modèles</string>
     <string name="save_settings_button">Tout Enregistrer</string>
     
-    <string name="template_work">Bonjour, je suis actuellement en consultation. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: %2$s</string>
-    <string name="template_off">Bonjour, je suis indisponible pour le moment. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: %2$s</string>
-    <string name="template_vacation">Bonjour, je suis actuellement en congés. Vous pouvez me laisser un message vocal/SMS, ou consulter Doctolib: %2$s</string>
+    <!-- Templates Base -->
+    <string name="template_work_base">Bonjour, je suis actuellement en consultation. Vous pouvez me laisser un message vocal ou m\'envoyer un SMS</string>
+    <string name="template_off_base">Bonjour, je suis indisponible pour le moment. Vous pouvez me laisser un message vocal ou m\'envoyer un SMS</string>
+    <string name="template_vacation_base">Bonjour, je suis actuellement en congés. Vous pouvez me laisser un message vocal ou m\'envoyer un SMS</string>
+    
+    <!-- Link Suffixes -->
+    <string name="template_link_doctolib">, ou consulter Doctolib: %s</string>
+    <string name="template_link_generic">, ou prendre RDV en ligne: %s</string>
 
     <string name="tester_mode_button">Activer Mode Testeur</string>
     <string name="tester_mode_active">Mode Testeur Activé</string>

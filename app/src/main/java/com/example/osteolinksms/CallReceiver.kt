@@ -205,12 +205,14 @@ class CallReceiver : BroadcastReceiver() {
         val allowLU = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_LU, false)
         val allowDE = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_DE, false)
         val allowCH = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_CH, false)
+        val allowES = prefs.getBoolean(EditMessagesActivity.KEY_COUNTRY_ES, false)
 
         if (allowFR && (cleanNumber.startsWith("+336") || cleanNumber.startsWith("+337") || cleanNumber.startsWith("06") || cleanNumber.startsWith("07"))) return true
         if (allowBE && (cleanNumber.startsWith("+324") || cleanNumber.startsWith("00324"))) return true
         if (allowLU && (cleanNumber.startsWith("+3526") || cleanNumber.startsWith("003526"))) return true
         if (allowDE && (cleanNumber.startsWith("+491") || cleanNumber.startsWith("00491"))) return true
         if (allowCH && (cleanNumber.startsWith("+417") || cleanNumber.startsWith("00417"))) return true
+        if (allowES && (cleanNumber.startsWith("+346") || cleanNumber.startsWith("00346") || cleanNumber.startsWith("+347") || cleanNumber.startsWith("00347"))) return true
 
         return false
     }
