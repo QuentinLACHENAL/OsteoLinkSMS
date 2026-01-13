@@ -32,6 +32,7 @@ L'objectif est d'assurer qu'aucun patient ne reste sans réponse, en envoyant au
 *   **Historique Visuel** : Liste claire des événements avec icônes (Appels manqués, SMS envoyés, Erreurs).
 *   **Export CSV** : Possibilité d'exporter l'historique pour vos archives ou preuves de contact.
 *   **Notifications** : Notifie l'utilisateur lorsqu'un SMS automatique a été envoyé avec succès. Une notification persistante indique si la surveillance est active.
+*   **Actualités** : Système d'annonces à distance pour informer les utilisateurs des mises à jour.
 
 ---
 
@@ -55,8 +56,9 @@ L'application est construite en **Kotlin** et suit une architecture robuste bas�
     *   Interfaces utilisateurs pour le tableau de bord et la configuration.
     *   Utilisent `SharedPreferences` pour stocker les réglages (horaires, messages, whitelist, etc.).
 
-4.  **`HistoryManager` & `NotificationManager`** :
-    *   Gestion de la persistance de l'historique (stockage local simple) et affichage des notifications système.
+4.  **`NewsChecker` & `RegistrationManager`** :
+    *   Gestion de la communication distante (News et Enregistrement utilisateur).
+    *   Utilisent des appels HTTP simples vers GitHub Gist et Google Forms.
 
 ### Flux de Données (Workflow)
 
@@ -76,14 +78,49 @@ L'application est construite en **Kotlin** et suit une architecture robuste bas�
 
 ---
 
+## 🔧 Gestion & Maintenance (Admin)
+
+Cette section explique comment interagir avec les utilisateurs de l'application (APK hors-store).
+
+### 1. Envoyer une Annonce / News
+L'application vérifie automatiquement un fichier hébergé sur Internet pour afficher des messages aux utilisateurs (Mise à jour dispo, Info importante, etc.).
+
+*   **Outil** : GitHub Gist
+*   **Lien d'édition** : [Modifier le fichier news.json](https://gist.github.com/QuentinLACHENAL/329daadcd453e8f5397c565e462e9ed7)
+*   **Format** :
+    ```json
+    {
+      "id": 2,                // Incrémentez ce chiffre pour que le message s'affiche !
+      "title": "Titre",
+      "message": "Votre message ici...",
+      "link_url": "https://...",
+      "link_label": "Voir"
+    }
+    ```
+*   **Note** : Tant que vous ne changez pas l'ID (ex: passer de 1 à 2), les utilisateurs qui ont déjà vu le message ne le reverront pas.
+
+### 2. Récupérer les Utilisateurs (Base de Données)
+Au premier lancement, l'application demande le Nom et l'Email de l'utilisateur. Ces données arrivent dans votre Google Form.
+
+*   **Outil** : Google Forms
+*   **Lien du Formulaire** : [Éditer le formulaire](https://docs.google.com/forms/d/1kMxtD_yM5u3d6-hJVyMAoYPyLfTSL_RNpldDQWCDdOA/edit)
+*   **Voir les inscrits** : Cliquez sur l'onglet **Réponses** dans le formulaire. Vous pouvez cliquer sur l'icône verte "Sheets" pour créer un tableau Excel automatique.
+
+### 3. Support & Contact
+*   **Email Développeur** : `contact@osteolink.fr`
+*   **Bug** : Les utilisateurs ont un bouton "Signaler un bug" dans l'application qui envoie un mail à cette adresse.
+
+---
+
 ## 🔒 Confidentialité & Permissions
 
-L'application fonctionne **100% en local**. Aucune donnée n'est envoyée vers un serveur tiers.
+L'application fonctionne **100% en local**. Aucune donnée n'est envoyée vers un serveur tiers (sauf l'enregistrement volontaire au démarrage vers Google Forms).
 
 *   **READ_CALL_LOG** : Indispensable pour détecter *qui* a appelé et si c'est un appel *manqué*.
 *   **SEND_SMS** : Pour envoyer la réponse automatique.
 *   **READ_CONTACTS** : (Optionnel) Pour ne pas répondre aux numéros déjà enregistrés dans votre répertoire (si l'option est cochée).
 *   **READ_PHONE_STATE** : Pour détecter quand le téléphone sonne et gérer la Double SIM.
+*   **INTERNET** : Uniquement pour récupérer les "News" (Gist) et envoyer l'inscription (Google Forms).
 
 ---
 
@@ -98,7 +135,3 @@ L'application utilise Gradle.
 # Compiler l'APK de release
 ./gradlew assembleRelease
 ```
-
----
-
-*Développé pour les besoins spécifiques des praticiens de santé.*
