@@ -36,8 +36,8 @@
     
     <string name="settings_section_messages">Configuration des Messages</string>
 
-    <string name="practitioner_name_hint">Nom du Cabinet / Praticien</string>
-    <string name="cabinet_prefix">Cabinet d\'Ostéopathie %s :\n</string>
+    <string name="practitioner_name_hint">Cabinet d\'Ostéopathie LACHENAL</string>
+    <string name="cabinet_prefix">%s\n</string>
     
     <string name="doctolib_id_hint">URL Prise de RDV (ex: Doctolib)</string>
     <string name="include_booking_link_label">Inclure le lien de prise de RDV dans les messages</string>
