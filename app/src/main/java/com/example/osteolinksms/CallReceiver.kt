@@ -94,7 +94,7 @@ class CallReceiver : BroadcastReceiver() {
 
                     Logger.log(context, "BACKGROUND_TASK: Last call details: num=$number, type=$type, recent=${timeSinceCall}ms ago")
 
-                    if (type == CallLog.Calls.MISSED_TYPE && timeSinceCall < 15000) {
+                    if (type == CallLog.Calls.MISSED_TYPE && timeSinceCall < 60000) {
                         Logger.log(context, "BACKGROUND_TASK: Call identified as a recent missed call. Handling SMS.")
                         handleMissedCall(context, number)
                     } else {
