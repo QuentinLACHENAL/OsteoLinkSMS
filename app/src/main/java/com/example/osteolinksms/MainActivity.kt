@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var masterSwitch: SwitchCompat
-    private lateinit var practitionerNameEditText: EditText
     private lateinit var vacationModeSwitch: SwitchCompat
     private lateinit var unknownOnlyCheckBox: CheckBox
     private lateinit var forceSendCheckBox: CheckBox
@@ -71,7 +70,6 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         masterSwitch = findViewById(R.id.masterSwitch)
-        practitionerNameEditText = findViewById(R.id.practitionerNameEditText)
         vacationModeSwitch = findViewById(R.id.vacationModeSwitch)
         unknownOnlyCheckBox = findViewById(R.id.unknownOnlyCheckBox)
         forceSendCheckBox = findViewById(R.id.forceSendCheckBox)
@@ -162,10 +160,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
-        // Load saved practitioner name
-        val savedName = sharedPreferences.getString(KEY_PRACTITIONER_NAME, "")
-        practitionerNameEditText.setText(savedName)
-
         val isAppEnabled = sharedPreferences.getBoolean(KEY_APP_ENABLED, true)
         masterSwitch.isChecked = isAppEnabled
         updateMasterSwitchText(isAppEnabled)
@@ -193,13 +187,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Application Désactivée (Pas de surveillance)", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        // Save Name
-        findViewById<Button>(R.id.savePractitionerButton).setOnClickListener {
-            val name = practitionerNameEditText.text.toString()
-            sharedPreferences.edit { putString(KEY_PRACTITIONER_NAME, name) }
-            Toast.makeText(this, "Nom enregistré", Toast.LENGTH_SHORT).show()
         }
 
         // Switches & Checkboxes

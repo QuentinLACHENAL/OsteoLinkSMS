@@ -1,187 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:orientation="vertical"
     android:background="#FFFFFF"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/mainContent"
+    <!-- Partie Scrollable (Tout le contenu qui peut dépasser) -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/masterSwitch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/master_switch_label"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:padding="16dp"
-            android:layout_marginBottom="8dp"
-            android:checked="true"/>
-
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/logo_app_transparent" />
-
-        <!-- Practitioner Name -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
-            
-            <EditText
-                android:id="@+id/practitionerNameEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/practitioner_name_hint"
-                android:autofillHints="name"
-                android:inputType="textPersonName" />
-
-            <Button
-                android:id="@+id/savePractitionerButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?android:attr/buttonBarButtonStyle"
-                android:text="@string/save_practitioner_button" />
-        </LinearLayout>
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/vacationModeSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginTop="8dp"
-            android:text="@string/vacation_mode_label"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
-
-        <CheckBox
-            android:id="@+id/unknownOnlyCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/unknown_only_checkbox" />
-
-        <CheckBox
-            android:id="@+id/forceSendCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/force_send_checkbox" />
-
-        <!-- Dashboard -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:layout_marginTop="16dp"
-            android:padding="12dp"
-            android:background="#F5F5F5">
-            <TextView
-                android:layout_width="wrap_content"
+            android:padding="16dp">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/masterSwitch"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/dashboard_title"
+                android:text="@string/master_switch_label"
                 android:textStyle="bold"
-                android:textSize="14sp"
-                android:textColor="#3F51B5"/>
-            <TextView
-                android:id="@+id/smsSentTodayTextView"
+                android:textSize="20sp"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:checked="true"/>
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/logo_app_transparent" />
+
+            <!-- Options rapides -->
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/vacationModeSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sms_sent_today_default"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"/>
-        </LinearLayout>
-
-        <!-- Manual SMS -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="24dp">
-
-            <EditText
-                android:id="@+id/phoneNumberEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="phone"
-                android:hint="@string/patient_number_hint"                android:inputType="phone" />
-
-            <Button
-                android:id="@+id/sendSmsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/send_sms_to_patient_button" />
-            
-            <Button
-                android:id="@+id/testerModeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="start"
                 android:layout_marginTop="8dp"
-                android:text="@string/tester_mode_button"
-                style="?android:attr/buttonBarButtonStyle"/>
+                android:text="@string/vacation_mode_label"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
 
+            <CheckBox
+                android:id="@+id/unknownOnlyCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="8dp"
+                android:text="@string/unknown_only_checkbox" />
+
+            <CheckBox
+                android:id="@+id/forceSendCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="8dp"
+                android:text="@string/force_send_checkbox" />
+
+            <!-- Dashboard -->
             <LinearLayout
-                android:id="@+id/testButtonsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="gone">
-                <Button
-                    android:id="@+id/testShortSmsButton"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"
+                android:background="#F5F5F5">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:text="@string/test_short_sms_button" />
-                <Button
-                    android:id="@+id/testLongSmsButton"
+                    android:text="@string/dashboard_title"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="#3F51B5"/>
+                <TextView
+                    android:id="@+id/smsSentTodayTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:text="@string/test_long_sms_button" />
+                    android:text="@string/sms_sent_today_default"
+                    android:layout_marginTop="4dp"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
+            <!-- Manual SMS / Tests -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp">
+
+                <EditText
+                    android:id="@+id/phoneNumberEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="phone"
+                    android:hint="@string/patient_number_hint"
+                    android:inputType="phone" />
+
+                <Button
+                    android:id="@+id/sendSmsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/send_sms_to_patient_button" />
+                
+                <Button
+                    android:id="@+id/testerModeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/tester_mode_button"
+                    style="?android:attr/buttonBarButtonStyle"/>
+
+                <LinearLayout
+                    android:id="@+id/testButtonsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <Button
+                        android:id="@+id/testShortSmsButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:text="@string/test_short_sms_button" />
+                    <Button
+                        android:id="@+id/testLongSmsButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:text="@string/test_long_sms_button" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/checkPermissionsButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="@string/check_permissions_button" />
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-
+    <!-- Partie Fixe (Boutons du bas) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_alignParentBottom="true">
-
-        <Button
-            android:id="@+id/checkPermissionsButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="?android:attr/buttonBarButtonStyle"
-            android:text="@string/check_permissions_button" />
-
+        android:padding="8dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            style="?android:attr/buttonBarStyle"
-            android:layout_marginTop="8dp">
+            style="?android:attr/buttonBarStyle">
 
             <Button
                 android:id="@+id/historyButton"
@@ -221,7 +207,6 @@
             android:textSize="14sp"
             android:textStyle="bold"
             android:background="?android:attr/selectableItemBackground" />
-
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

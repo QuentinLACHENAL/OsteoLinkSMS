@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class EditMessagesActivity : AppCompatActivity() {
 
+    private lateinit var practitionerNameEditText: EditText
     private lateinit var doctolibIdEditText: EditText
     private lateinit var startHourEditText: EditText
     private lateinit var endHourEditText: EditText
@@ -66,6 +67,7 @@ class EditMessagesActivity : AppCompatActivity() {
     }
 
     private fun bindViews() {
+        practitionerNameEditText = findViewById(R.id.practitionerNameEditText)
         doctolibIdEditText = findViewById(R.id.doctolibIdEditText)
         includeBookingLinkCheckBox = findViewById(R.id.includeBookingLinkCheckBox)
 
@@ -97,6 +99,7 @@ class EditMessagesActivity : AppCompatActivity() {
     private fun loadSettings() {
         val prefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
 
+        practitionerNameEditText.setText(prefs.getString(MainActivity.KEY_PRACTITIONER_NAME, ""))
         doctolibIdEditText.setText(prefs.getString(KEY_DOCTOLIB_ID, ""))
         includeBookingLinkCheckBox.isChecked = prefs.getBoolean(KEY_INCLUDE_LINK, true)
 
@@ -164,6 +167,7 @@ class EditMessagesActivity : AppCompatActivity() {
         }.joinToString(",")
 
         getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE).edit()
+            .putString(MainActivity.KEY_PRACTITIONER_NAME, practitionerNameEditText.text.toString())
             .putString(KEY_DOCTOLIB_ID, doctolibIdEditText.text.toString())
             .putBoolean(KEY_INCLUDE_LINK, includeBookingLinkCheckBox.isChecked)
             .putInt(KEY_START_HOUR, startHour)
@@ -189,7 +193,8 @@ class EditMessagesActivity : AppCompatActivity() {
 
     private fun generateTemplates() {
         val prefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val name = prefs.getString(MainActivity.KEY_PRACTITIONER_NAME, "")
+        // Use the text from the input field directly
+        val name = practitionerNameEditText.text.toString()
 
         val actions: String
 
