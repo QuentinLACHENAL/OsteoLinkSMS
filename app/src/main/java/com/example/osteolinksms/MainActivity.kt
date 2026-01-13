@@ -269,6 +269,10 @@ class MainActivity : AppCompatActivity() {
             checkAndNotifyPermissions()
         }
 
+        findViewById<Button>(R.id.tutorialButton).setOnClickListener {
+            startActivity(Intent(this, TutorialActivity::class.java))
+        }
+
         findViewById<TextView>(R.id.btnContactSupport).setOnClickListener {
             val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:contact@osteolink.fr")

@@ -21,6 +21,13 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/logo_app_transparent" />
+
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/masterSwitch"
                 android:layout_width="match_parent"
@@ -29,15 +36,8 @@
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:padding="16dp"
-                android:layout_marginBottom="8dp"
-                android:checked="true"/>
-
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
                 android:layout_marginBottom="16dp"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/logo_app_transparent" />
+                android:checked="true"/>
 
             <!-- Options rapides -->
             <androidx.appcompat.widget.SwitchCompat
@@ -150,6 +150,15 @@
                     android:layout_marginTop="16dp"
                     style="?android:attr/buttonBarButtonStyle"
                     android:text="@string/check_permissions_button" />
+
+                <Button
+                    android:id="@+id/tutorialButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="Comment ça marche ? (Tuto)"
+                    android:textColor="#3F51B5"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
