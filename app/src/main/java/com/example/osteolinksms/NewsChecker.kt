@@ -25,8 +25,9 @@ object NewsChecker {
     fun checkNews(context: Context, onUpdateAvailable: (String) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // 1. Fetch data
-                val jsonString = URL(NEWS_URL).readText()
+                // 1. Fetch data (Anti-cache)
+                val urlString = "$NEWS_URL?t=${System.currentTimeMillis()}"
+                val jsonString = URL(urlString).readText()
                 val json = JSONObject(jsonString)
 
                 // --- CHECK FOR UPDATES ---
@@ -41,6 +42,8 @@ object NewsChecker {
                     @Suppress("DEPRECATION")
                     pInfo.versionCode
                 }
+
+                Logger.log(context, "Update Check: Local=$currentVersionCode, Remote=$latestVersionCode")
 
                 if (latestVersionCode > currentVersionCode && updateUrl.isNotEmpty()) {
                     withContext(Dispatchers.Main) {

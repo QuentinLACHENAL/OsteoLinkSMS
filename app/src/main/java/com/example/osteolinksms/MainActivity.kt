@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                        // --- Check for Remote News/Updates ---
+                                // --- Check for Remote News/Updates ---
 
 
 
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                        NewsChecker.checkNews(this) { updateUrl ->
+                        
 
 
 
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                            val btnUpdate = findViewById<Button>(R.id.btnUpdateAvailable)
+                                NewsChecker.checkNews(this) { updateUrl ->
 
 
 
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                            btnUpdate.visibility = android.view.View.VISIBLE
+                        
 
 
 
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                            btnUpdate.setOnClickListener {
+                                    try {
 
 
 
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                                try {
+                        
 
 
 
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl))
+                                        val btnUpdate = findViewById<Button>(R.id.btnUpdateAvailable)
 
 
 
@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                                    startActivity(intent)
+                        
 
 
 
@@ -193,7 +193,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                                } catch (e: Exception) {
+                                        btnUpdate.visibility = android.view.View.VISIBLE
 
 
 
@@ -201,7 +201,215 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                                    Toast.makeText(this, "Impossible d'ouvrir le lien.", Toast.LENGTH_SHORT).show()
+                        
+
+
+
+        
+
+
+
+                                        Toast.makeText(this, "Une mise à jour est disponible !", Toast.LENGTH_LONG).show()
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                        
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                        btnUpdate.setOnClickListener {
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                            try {
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl))
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                                startActivity(intent)
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                            } catch (e: Exception) {
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                                Toast.makeText(this, "Impossible d'ouvrir le lien.", Toast.LENGTH_SHORT).show()
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                            }
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                        }
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                    } catch (e: Exception) {
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                        e.printStackTrace()
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                                    }
+
+
+
+        
+
+
+
+                        
 
 
 
@@ -210,22 +418,6 @@ class MainActivity : AppCompatActivity() {
 
 
                                 }
-
-
-
-        
-
-
-
-                            }
-
-
-
-        
-
-
-
-                        }
 
 
 
@@ -443,8 +635,9 @@ class MainActivity : AppCompatActivity() {
             sb.append(truncatedLogs)
         }
 
-        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:contact@osteolink.fr")
+        val emailIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "message/rfc822" // Force email apps
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("contact@osteolink.fr"))
             putExtra(Intent.EXTRA_SUBJECT, "Support OsteoLinkSMS ($version)")
             putExtra(Intent.EXTRA_TEXT, "Bonjour,\n\n[Votre message ici]\n$sb")
         }

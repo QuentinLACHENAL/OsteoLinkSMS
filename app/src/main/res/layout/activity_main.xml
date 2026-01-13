@@ -116,10 +116,27 @@
                 android:layout_marginTop="24dp">
 
                 <Button
+                    android:id="@+id/tutorialButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="Comment ça marche ? (Tuto)"
+                    android:textColor="#3F51B5"/>
+
+                <Button
+                    android:id="@+id/checkPermissionsButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="@string/check_permissions_button" />
+
+                <Button
                     android:id="@+id/testerModeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/tester_mode_button"
                     style="?android:attr/buttonBarButtonStyle"/>
@@ -168,23 +185,6 @@
                             android:text="@string/test_long_sms_button" />
                     </LinearLayout>
                 </LinearLayout>
-
-                <Button
-                    android:id="@+id/checkPermissionsButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:text="@string/check_permissions_button" />
-
-                <Button
-                    android:id="@+id/tutorialButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:text="Comment ça marche ? (Tuto)"
-                    android:textColor="#3F51B5"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
