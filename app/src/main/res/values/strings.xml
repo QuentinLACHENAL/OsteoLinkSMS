@@ -18,6 +18,7 @@
     
     <string name="dashboard_title">Activité du jour</string>
     <string name="sms_sent_today">SMS envoyés aujourd\'hui : %1$d</string>
+    <string name="sms_sent_today_default">SMS envoyés aujourd\'hui : 0</string>
     
     <string name="settings_section_general">Paramètres Généraux</string>
     <string name="settings_section_messages">Configuration des Messages</string>
