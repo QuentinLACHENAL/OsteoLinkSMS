@@ -60,7 +60,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Les téléphones récents tentent de 'tuer' les applications en arrière-plan pour économiser la batterie.\n\nVous DEVEZ désactiver l'optimisation de batterie pour OsteoLinkSMS dans les réglages Android, sinon l'application cessera de fonctionner après quelques heures."
-                android:textSize="13sp"/>
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/openSettingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ouvrir les Réglages (Batterie)"
+                android:backgroundTint="#D32F2F"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
 
         <!-- Section 3 : Les Modes -->
@@ -116,7 +125,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="• Uniquement aux mobiles (06, 07...). Pas aux fixes.\n• Elle ne répond PAS si vous avez déjà envoyé un SMS à ce numéro il y a moins de 5 minutes (Anti-Spam).\n• Si l'option 'Contacts Inconnus Seulement' est cochée, elle ne répondra pas à vos amis/famille enregistrés dans votre répertoire."
+            android:text="• Uniquement aux mobiles (06, 07...). Pas aux fixes.\n• Elle ne répond PAS si vous avez déjà envoyé un SMS à ce numéro récemment (Délai de 5 min par défaut, mais CONFIGURABLE dans les Réglages).\n• Si l'option 'Contacts Inconnus Seulement' est cochée, elle ne répondra pas à vos amis/famille enregistrés dans votre répertoire."
             android:lineSpacingMultiplier="1.2"
             android:layout_marginBottom="16dp"/>
 
@@ -136,6 +145,15 @@
             android:text="• Délai : Le SMS part environ 5 à 10 secondes après que vous ayez raccroché. C'est normal (temps de vérification).\n• Double SIM : L'appli utilise la carte SIM par défaut pour les SMS, mais vous pouvez forcer la SIM 1 ou 2 dans les réglages."
             android:lineSpacingMultiplier="1.2"
             android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Une question ? Un souci ? N'hésitez pas à contacter le développeur via le bouton sur l'écran d'accueil. Il est disponible, sympa, et c'est aussi un ostéo ! 🦴"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:textColor="#555555"/>
 
         <Button
             android:id="@+id/closeTutorialButton"
