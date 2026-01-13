@@ -81,29 +81,38 @@ class CallReceiver : BroadcastReceiver() {
         }
 
         try {
-            delay(1500) 
+            // Smart Polling: Try up to 10 times (5 seconds max) to find the new call log entry
+            var found = false
+            for (i in 1..10) {
+                delay(500) // Wait 500ms between attempts
 
-            context.contentResolver.query(
-                CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC"
-            )?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
-                    val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
-                    val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
-                    val timeSinceCall = System.currentTimeMillis() - date
+                context.contentResolver.query(
+                    CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC"
+                )?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        val number = cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))
+                        val type = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))
+                        val date = cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))
+                        val timeSinceCall = System.currentTimeMillis() - date
 
-                    Logger.log(context, "BACKGROUND_TASK: Last call details: num=$number, type=$type, recent=${timeSinceCall}ms ago")
+                        Logger.log(context, "BACKGROUND_TASK (Attempt $i): Last call: num=$number, type=$type, recent=${timeSinceCall}ms ago")
 
-                    if (type == CallLog.Calls.MISSED_TYPE && timeSinceCall < 60000) {
-                        Logger.log(context, "BACKGROUND_TASK: Call identified as a recent missed call. Handling SMS.")
-                        handleMissedCall(context, number)
-                    } else {
-                        Logger.log(context, "BACKGROUND_TASK: Call is not a recent missed call. No action taken.")
+                        // Threshold 60s (60000ms)
+                        if (type == CallLog.Calls.MISSED_TYPE && timeSinceCall < 60000) {
+                            Logger.log(context, "BACKGROUND_TASK: Call identified as a recent missed call. Handling SMS.")
+                            handleMissedCall(context, number)
+                            found = true
+                        }
                     }
-                } else {
-                    Logger.log(context, "BACKGROUND_TASK: Could not read last call. Cursor is empty.")
                 }
+                
+                if (found) break
             }
+            
+            if (!found) {
+                Logger.log(context, "BACKGROUND_TASK: Failed to identify a recent missed call after 5 seconds.")
+            }
+
         } catch (e: Exception) {
             Logger.log(context, "BACKGROUND_TASK: Exception reading call log: ${e.message}")
         }

@@ -116,6 +116,39 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Choix de la carte SIM"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"
+            android:textColor="#3F51B5"/>
+
+        <RadioGroup
+            android:id="@+id/simRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+            <RadioButton
+                android:id="@+id/simDefaultRadio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Défaut"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/sim1Radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SIM 1"/>
+            <RadioButton
+                android:id="@+id/sim2Radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SIM 2"/>
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/settings_section_messages"
             android:textSize="20sp"
             android:textStyle="bold"

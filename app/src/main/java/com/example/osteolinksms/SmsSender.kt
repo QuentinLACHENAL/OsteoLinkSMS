@@ -49,12 +49,29 @@ object SmsSender {
     }
 
     private fun getBestSmsManager(context: Context): SmsManager {
-        // Attempt to find the default SMS subscription ID for stability on modern/multi-SIM devices
-        val subId = if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            SubscriptionManager.getDefaultSmsSubscriptionId().takeIf { it != SubscriptionManager.INVALID_SUBSCRIPTION_ID }
-                ?: SubscriptionManager.getDefaultSubscriptionId()
-        } else {
-            SubscriptionManager.INVALID_SUBSCRIPTION_ID
+        var subId = SubscriptionManager.INVALID_SUBSCRIPTION_ID
+        val prefs = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val targetSlot = prefs.getInt(EditMessagesActivity.KEY_SIM_SLOT, -1)
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            
+            // Try to find the specific SIM based on slot preference
+            if (targetSlot != -1) {
+                val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                val activeSubs = subscriptionManager.activeSubscriptionInfoList
+                activeSubs?.forEach { subInfo ->
+                    if (subInfo.simSlotIndex == targetSlot) {
+                        subId = subInfo.subscriptionId
+                        Logger.log(context, "SmsSender: Found subscription ID $subId for target slot $targetSlot")
+                    }
+                }
+            }
+
+            // Fallback to default if no specific slot selected or not found
+            if (subId == SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
+                subId = SubscriptionManager.getDefaultSmsSubscriptionId().takeIf { it != SubscriptionManager.INVALID_SUBSCRIPTION_ID }
+                    ?: SubscriptionManager.getDefaultSubscriptionId()
+            }
         }
 
         return if (subId != SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
