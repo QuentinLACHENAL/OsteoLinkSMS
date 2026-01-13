@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="32dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guide d'Utilisation"
+            android:textColor="#3F51B5"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Section 1 : Le Principe -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. À quoi sert cette application ?"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp"/>
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="OsteoLinkSMS est votre secrétaire virtuel. Lorsque vous manquez un appel sur votre mobile (parce que vous êtes en consultation ou en week-end), l'application envoie automatiquement un SMS à votre patient pour lui donner les bonnes informations (lien Doctolib, horaires, etc.)."
+            android:textSize="14sp"
+            android:lineSpacingMultiplier="1.2"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Section 2 : Vital -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/tuto_warning_bg"
+            android:padding="12dp"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⚠️ IMPORTANT : Pour que ça marche"
+                android:textStyle="bold"
+                android:textColor="#D32F2F"
+                android:layout_marginBottom="4dp"/>
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Les téléphones récents tentent de 'tuer' les applications en arrière-plan pour économiser la batterie.\n\nVous DEVEZ désactiver l'optimisation de batterie pour OsteoLinkSMS dans les réglages Android, sinon l'application cessera de fonctionner après quelques heures."
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <!-- Section 3 : Les Modes -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2. Les 3 Modes de fonctionnement"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="L'application choisit toute seule quel message envoyer :"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🟢 Mode Travail : Selon vos horaires (ex: 8h-19h). Message type : 'Je suis en consultation'."
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cn Mode Hors Horaires : Le soir et le week-end. Message type : 'Le cabinet est fermé'."
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🏖️ Mode Vacances : À activer manuellement. Il est prioritaire sur tout le reste."
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Section 4 : A qui repond-elle -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3. À qui répond l'application ?"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Uniquement aux mobiles (06, 07...). Pas aux fixes.\n• Elle ne répond PAS si vous avez déjà envoyé un SMS à ce numéro il y a moins de 5 minutes (Anti-Spam).\n• Si l'option 'Contacts Inconnus Seulement' est cochée, elle ne répondra pas à vos amis/famille enregistrés dans votre répertoire."
+            android:lineSpacingMultiplier="1.2"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Section 5 : Astuces -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4. Bon à savoir"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="• Délai : Le SMS part environ 5 à 10 secondes après que vous ayez raccroché. C'est normal (temps de vérification).\n• Double SIM : L'appli utilise la carte SIM par défaut pour les SMS, mais vous pouvez forcer la SIM 1 ou 2 dans les réglages."
+            android:lineSpacingMultiplier="1.2"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/closeTutorialButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="J'ai compris"
+            android:backgroundTint="#3F51B5"/>
+
+    </LinearLayout>
+</ScrollView>
