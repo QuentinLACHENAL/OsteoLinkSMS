@@ -3,7 +3,9 @@ package com.example.osteolinksms
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,13 +22,33 @@ object NewsChecker {
     private const val PREFS_NEWS = "news_prefs"
     private const val KEY_LAST_SEEN_ID = "last_seen_msg_id"
 
-    fun checkNews(context: Context) {
+    fun checkNews(context: Context, onUpdateAvailable: (String) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // 1. Fetch data
                 val jsonString = URL(NEWS_URL).readText()
                 val json = JSONObject(jsonString)
 
+                // --- CHECK FOR UPDATES ---
+                val latestVersionCode = json.optInt("latest_version_code", 0)
+                val updateUrl = json.optString("update_url", "")
+                
+                // Get Current Version Code safely without BuildConfig
+                val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+                val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    pInfo.longVersionCode.toInt()
+                } else {
+                    @Suppress("DEPRECATION")
+                    pInfo.versionCode
+                }
+
+                if (latestVersionCode > currentVersionCode && updateUrl.isNotEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        onUpdateAvailable(updateUrl)
+                    }
+                }
+
+                // --- CHECK FOR NEWS (Dialog) ---
                 val serverId = json.optInt("id", -1)
                 if (serverId == -1) return@launch
 

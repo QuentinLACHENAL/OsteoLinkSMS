@@ -101,11 +101,131 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                // --- Check Registration (Collect Email) ---
+                        // --- Check Registration (Collect Email) ---
 
 
 
-                RegistrationManager.checkRegistration(this)
+        
+
+
+
+                        RegistrationManager.checkRegistration(this)
+
+
+
+        
+
+
+
+                        
+
+
+
+        
+
+
+
+                        // --- Check for Remote News/Updates ---
+
+
+
+        
+
+
+
+                        NewsChecker.checkNews(this) { updateUrl ->
+
+
+
+        
+
+
+
+                            val btnUpdate = findViewById<Button>(R.id.btnUpdateAvailable)
+
+
+
+        
+
+
+
+                            btnUpdate.visibility = android.view.View.VISIBLE
+
+
+
+        
+
+
+
+                            btnUpdate.setOnClickListener {
+
+
+
+        
+
+
+
+                                try {
+
+
+
+        
+
+
+
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl))
+
+
+
+        
+
+
+
+                                    startActivity(intent)
+
+
+
+        
+
+
+
+                                } catch (e: Exception) {
+
+
+
+        
+
+
+
+                                    Toast.makeText(this, "Impossible d'ouvrir le lien.", Toast.LENGTH_SHORT).show()
+
+
+
+        
+
+
+
+                                }
+
+
+
+        
+
+
+
+                            }
+
+
+
+        
+
+
+
+                        }
+
+
+
+        
 
 
 
@@ -113,15 +233,11 @@ class MainActivity : AppCompatActivity() {
 
 
 
-                // --- Check for Remote News/Updates ---
+        
 
 
 
-                NewsChecker.checkNews(this)
-
-
-
-        setupListeners()
+                        setupListeners()
 
     }
     private fun showPermissionRationale() {

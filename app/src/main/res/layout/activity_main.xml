@@ -28,6 +28,18 @@
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/logo_app_transparent" />
 
+            <Button
+                android:id="@+id/btnUpdateAvailable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚠️ Mise à jour disponible !"
+                android:backgroundTint="#D32F2F"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:padding="12dp"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"/>
+
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/masterSwitch"
                 android:layout_width="match_parent"
