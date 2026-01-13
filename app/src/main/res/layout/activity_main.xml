@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <!-- Partie Scrollable (Tout le contenu qui peut dépasser) -->
@@ -240,6 +241,7 @@
             android:textColor="#3F51B5"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:layout_marginBottom="24dp"
             android:background="?android:attr/selectableItemBackground" />
     </LinearLayout>
 
