@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -80,16 +81,33 @@ class MainActivity : AppCompatActivity() {
         smsSentTodayTextView = findViewById(R.id.smsSentTodayTextView)
         checkPermissionsButton = findViewById(R.id.checkPermissionsButton)
 
+        
+
         NotificationManager.createNotificationChannel(this)
 
+
+
         if (!hasPermissions()) {
+
             showPermissionRationale()
+
         }
 
-        setupUI()
-        setupListeners()
-    }
 
+
+        setupUI()
+
+        
+
+        // --- Check for Remote News/Updates ---
+
+        NewsChecker.checkNews(this)
+
+
+
+        setupListeners()
+
+    }
     private fun showPermissionRationale() {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Autorisations Requises")
@@ -244,6 +262,18 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissionsButton.setOnClickListener {
             checkAndNotifyPermissions()
+        }
+
+        findViewById<TextView>(R.id.btnContactSupport).setOnClickListener {
+            val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:contact@osteolink.fr")
+                putExtra(Intent.EXTRA_SUBJECT, "OsteoLinkSMS : Bug ou Contact")
+            }
+            try {
+                startActivity(Intent.createChooser(emailIntent, "Envoyer un email..."))
+            } catch (e: Exception) {
+                Toast.makeText(this, "Aucune application de mail trouvée.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

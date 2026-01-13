@@ -153,7 +153,8 @@ class CallReceiver : BroadcastReceiver() {
         }
 
         val unknownOnly = sharedPreferences.getBoolean(KEY_UNKNOWN_ONLY, false)
-        if (unknownOnly && !isUnknownNumber(context, phoneNumber)) {
+        // Fix: Force Send should also bypass the "Unknown Only" filter
+        if (!forceSend && unknownOnly && !isUnknownNumber(context, phoneNumber)) {
             Logger.log(context, "SMS not sent: call is from a known number and option is set to unknown only.")
             return
         }

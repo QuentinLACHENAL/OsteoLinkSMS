@@ -47,7 +47,9 @@ object NotificationManager {
             .setAutoCancel(true)
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
+        // Use phoneNumber.hashCode() as ID so multiple parts of the same SMS update the same notification
+        // instead of stacking multiple notifications.
+        notificationManager.notify(phoneNumber.hashCode(), builder.build())
     }
 
     fun updateMonitoringNotification(context: Context, isEnabled: Boolean) {
