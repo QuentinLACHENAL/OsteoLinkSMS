@@ -37,7 +37,7 @@
     <string name="settings_section_messages">Configuration des Messages</string>
 
     <string name="practitioner_name_hint">Nom du Cabinet / Praticien</string>
-    <string name="cabinet_prefix">Cabinet d\'Ostéopathie %s : </string>
+    <string name="cabinet_prefix">Cabinet d\'Ostéopathie %s :\n</string>
     
     <string name="doctolib_id_hint">URL Prise de RDV (ex: Doctolib)</string>
     <string name="include_booking_link_label">Inclure le lien de prise de RDV dans les messages</string>
@@ -59,17 +59,17 @@
     <string name="save_settings_button">Tout Enregistrer</string>
     
     <!-- Templates Prefixes -->
-    <string name="prefix_work">Bonjour, je suis actuellement en consultation.</string>
-    <string name="prefix_off">Bonjour, je suis indisponible pour le moment.</string>
-    <string name="prefix_vacation">Bonjour, je suis actuellement en congés.</string>
+    <string name="prefix_work">Bonjour, je suis actuellement en consultation.\n</string>
+    <string name="prefix_off">Bonjour, je suis indisponible pour le moment.\n</string>
+    <string name="prefix_vacation">Bonjour, je suis actuellement en congés.\n</string>
     
     <!-- Templates Actions -->
     <string name="actions_no_link"> Vous pouvez me laisser un message vocal ou m\'envoyer un SMS.</string>
-    <string name="actions_with_link"> Vous pouvez me laisser un message vocal, m\'envoyer un SMS%s</string>
+    <string name="actions_with_link"> Vous pouvez me laisser un message vocal, m\'envoyer un SMS %s</string>
     
     <!-- Link Suffixes -->
-    <string name="suffix_doctolib"> ou consulter Doctolib: %s</string>
-    <string name="suffix_generic"> ou prendre RDV en ligne: %s</string>
+    <string name="suffix_doctolib">ou consulter Doctolib: %s</string>
+    <string name="suffix_generic">ou prendre RDV en ligne: %s</string>
 
     <string name="tester_mode_button">Activer Mode Testeur</string>
     <string name="tester_mode_active">Mode Testeur Activé</string>
