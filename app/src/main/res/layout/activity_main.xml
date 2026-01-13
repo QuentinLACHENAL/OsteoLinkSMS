@@ -30,7 +30,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/logo_osteolink" />
+            android:src="@drawable/logo_app_transparent" />
 
         <!-- Practitioner Name -->
         <LinearLayout

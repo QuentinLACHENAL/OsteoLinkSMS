@@ -39,7 +39,7 @@ object NotificationManager {
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID_EVENTS)
-            .setSmallIcon(R.drawable.logo_osteolink) // Ensure this resource exists, fallback if needed
+            .setSmallIcon(R.drawable.logo_notification) // Ensure this resource exists, fallback if needed
             .setContentTitle("SMS Automatique Envoyé")
             .setContentText("Destinataire : $phoneNumber")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -60,7 +60,7 @@ object NotificationManager {
             val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID_SERVICE)
-                .setSmallIcon(R.drawable.logo_osteolink)
+                .setSmallIcon(R.drawable.logo_notification)
                 .setContentTitle("OsteoLinkSMS Actif")
                 .setContentText("L'application surveille vos appels manqués.")
                 .setPriority(NotificationCompat.PRIORITY_LOW)
