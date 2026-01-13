@@ -43,7 +43,7 @@
                 android:text="@string/save_practitioner_button" />
         </LinearLayout>
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/vacationModeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

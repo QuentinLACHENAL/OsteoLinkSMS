@@ -7,18 +7,18 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.view.isVisible
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var practitionerNameEditText: EditText
-    private lateinit var vacationModeSwitch: Switch
+    private lateinit var vacationModeSwitch: SwitchCompat
     private lateinit var unknownOnlyCheckBox: CheckBox
     private lateinit var forceSendCheckBox: CheckBox
     private lateinit var phoneNumberEditText: EditText
@@ -112,7 +112,8 @@ class MainActivity : AppCompatActivity() {
         forceSendCheckBox.isChecked = sharedPreferences.getBoolean(KEY_FORCE_SEND, false)
         
         // Hide test buttons initially
-        testButtonsLayout.visibility = View.GONE
+        testButtonsLayout.isVisible = false
+        forceSendCheckBox.isVisible = false
         updateTesterModeButtonText(false)
     }
 
@@ -139,12 +140,14 @@ class MainActivity : AppCompatActivity() {
 
         // Tester Mode Toggle
         testerModeButton.setOnClickListener {
-            val isVisible = testButtonsLayout.visibility == View.VISIBLE
+            val isVisible = testButtonsLayout.isVisible
             if (isVisible) {
-                testButtonsLayout.visibility = View.GONE
+                testButtonsLayout.isVisible = false
+                forceSendCheckBox.isVisible = false
                 updateTesterModeButtonText(false)
             } else {
-                testButtonsLayout.visibility = View.VISIBLE
+                testButtonsLayout.isVisible = true
+                forceSendCheckBox.isVisible = true
                 updateTesterModeButtonText(true)
             }
         }

@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/doctolib_id_hint"
             android:inputType="text"
+            android:importantForAutofill="no"
             android:layout_marginBottom="16dp"/>
 
         <TextView
@@ -65,11 +66,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/start_hour_hint"
+                android:importantForAutofill="no"
                 android:inputType="number"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="à"
+                android:text="@string/hour_separator"
                 android:layout_gravity="center"
                 android:padding="8dp"/>
             <EditText
@@ -78,8 +80,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/end_hour_hint"
+                android:importantForAutofill="no"
                 android:inputType="number"/>
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delay_label"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/delayEditText"
@@ -87,6 +96,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/delay_minutes_hint"
             android:inputType="number"
+            android:importantForAutofill="no"
             android:layout_marginBottom="16dp"/>
 
         <TextView
@@ -100,6 +110,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/whitelist_hint"
             android:inputType="text"
+            android:importantForAutofill="no"
             android:layout_marginBottom="24dp"/>
 
         <TextView
@@ -130,6 +141,8 @@
             android:layout_height="wrap_content"
             android:minLines="3"
             android:gravity="top"
+            android:inputType="textMultiLine|textCapSentences"
+            android:importantForAutofill="no"
             android:layout_marginBottom="16dp"/>
 
         <TextView
@@ -143,6 +156,8 @@
             android:layout_height="wrap_content"
             android:minLines="3"
             android:gravity="top"
+            android:inputType="textMultiLine|textCapSentences"
+            android:importantForAutofill="no"
             android:layout_marginBottom="16dp"/>
 
         <TextView
@@ -156,6 +171,8 @@
             android:layout_height="wrap_content"
             android:minLines="3"
             android:gravity="top"
+            android:inputType="textMultiLine|textCapSentences"
+            android:importantForAutofill="no"
             android:layout_marginBottom="24dp"/>
 
         <Button

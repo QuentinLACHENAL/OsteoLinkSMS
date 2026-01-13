@@ -10,7 +10,7 @@ object HistoryManager {
 
     private const val PREFS_NAME = "HistoryPrefs"
     private const val KEY_HISTORY = "history"
-    private const val MAX_HISTORY_SIZE = 100 // Increased size for more detailed logs
+    private const val MAX_HISTORY_SIZE = 50
 
     fun addHistoryEntry(context: Context, message: String) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
