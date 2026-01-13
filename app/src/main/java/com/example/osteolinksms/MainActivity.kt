@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     private val PERMISSIONS_REQUEST_CODE = 123
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var masterSwitch: SwitchCompat
     private lateinit var practitionerNameEditText: EditText
     private lateinit var vacationModeSwitch: SwitchCompat
     private lateinit var unknownOnlyCheckBox: CheckBox
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val PREFS_NAME = "OsteoLinkPrefs"
+        const val KEY_APP_ENABLED = "appEnabled"
         const val KEY_PRACTITIONER_NAME = "practitionerName"
         const val KEY_VACATION_MODE = "vacationMode"
         const val KEY_UNKNOWN_ONLY = "unknownOnly"
@@ -66,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        masterSwitch = findViewById(R.id.masterSwitch)
         practitionerNameEditText = findViewById(R.id.practitionerNameEditText)
         vacationModeSwitch = findViewById(R.id.vacationModeSwitch)
         unknownOnlyCheckBox = findViewById(R.id.unknownOnlyCheckBox)
@@ -88,6 +91,9 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateDashboard()
+        // Ensure notification status matches state (in case it was killed or cleared)
+        val isAppEnabled = sharedPreferences.getBoolean(KEY_APP_ENABLED, true)
+        NotificationManager.updateMonitoringNotification(this, isAppEnabled)
     }
 
     private fun updateDashboard() {
@@ -106,6 +112,9 @@ class MainActivity : AppCompatActivity() {
         val savedName = sharedPreferences.getString(KEY_PRACTITIONER_NAME, "")
         practitionerNameEditText.setText(savedName)
 
+        val isAppEnabled = sharedPreferences.getBoolean(KEY_APP_ENABLED, true)
+        masterSwitch.isChecked = isAppEnabled
+
         // Load checkboxes (Default false)
         vacationModeSwitch.isChecked = sharedPreferences.getBoolean(KEY_VACATION_MODE, false)
         unknownOnlyCheckBox.isChecked = sharedPreferences.getBoolean(KEY_UNKNOWN_ONLY, false)
@@ -118,6 +127,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        masterSwitch.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit { putBoolean(KEY_APP_ENABLED, isChecked) }
+            NotificationManager.updateMonitoringNotification(this, isChecked)
+            
+            if (isChecked) {
+                Toast.makeText(this, "Application Active", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Application Désactivée (Pas de surveillance)", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         // Save Name
         findViewById<Button>(R.id.savePractitionerButton).setOnClickListener {
             val name = practitionerNameEditText.text.toString()

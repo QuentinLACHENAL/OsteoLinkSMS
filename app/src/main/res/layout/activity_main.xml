@@ -15,6 +15,17 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/masterSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/master_switch_label"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:padding="16dp"
+            android:layout_marginBottom="8dp"
+            android:checked="true"/>
+
         <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"

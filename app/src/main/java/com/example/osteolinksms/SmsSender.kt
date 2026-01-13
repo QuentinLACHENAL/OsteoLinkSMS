@@ -31,12 +31,12 @@ object SmsSender {
             if (parts.size > 1) {
                 val sentIntents = ArrayList<PendingIntent>()
                 for (i in parts.indices) {
-                    sentIntents.add(createPendingIntent(context, i))
+                    sentIntents.add(createPendingIntent(context, i, phoneNumber))
                 }
                 smsManager.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, null)
                 Logger.log(context, "SmsSender: Sent multipart message.")
             } else {
-                smsManager.sendTextMessage(phoneNumber, null, message, createPendingIntent(context, 0), null)
+                smsManager.sendTextMessage(phoneNumber, null, message, createPendingIntent(context, 0, phoneNumber), null)
                 Logger.log(context, "SmsSender: Sent single part message.")
             }
 
@@ -93,9 +93,10 @@ object SmsSender {
         }
     }
 
-    private fun createPendingIntent(context: Context, offset: Int): PendingIntent {
+    private fun createPendingIntent(context: Context, offset: Int, phoneNumber: String): PendingIntent {
         val sentIntent = Intent(context, SmsResultReceiver::class.java)
         sentIntent.action = SENT_SMS_ACTION
+        sentIntent.putExtra("phoneNumber", phoneNumber)
         
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_IMMUTABLE

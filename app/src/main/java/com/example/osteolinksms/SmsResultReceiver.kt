@@ -13,7 +13,11 @@ class SmsResultReceiver : BroadcastReceiver() {
         val errorCode = intent?.getIntExtra("errorCode", -1)
         
         val resultText = when (code) {
-            Activity.RESULT_OK -> "SMS envoyé avec succès."
+            Activity.RESULT_OK -> {
+                val phoneNumber = intent?.getStringExtra("phoneNumber") ?: "Inconnu"
+                NotificationManager.showSmsSentNotification(context, phoneNumber)
+                "SMS envoyé avec succès."
+            }
             SmsManager.RESULT_ERROR_GENERIC_FAILURE -> "Échec Système : Erreur générique (Code sup: $errorCode)."
             SmsManager.RESULT_ERROR_NO_SERVICE -> "Échec Système : Pas de service."
             SmsManager.RESULT_ERROR_NULL_PDU -> "Échec Système : PDU nul."

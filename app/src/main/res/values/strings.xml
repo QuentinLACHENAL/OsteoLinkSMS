@@ -54,6 +54,7 @@
     <string name="force_send_checkbox">Forcer l\'envoi (pour tests)</string>
     <string name="patient_number_hint">Numéro du patient</string>
     <string name="send_sms_to_patient_button">Envoyer SMS au patient</string>
+    <string name="master_switch_label">Surveillance Active</string>
     <string name="check_permissions_button">Vérifier les autorisations</string>
     <string name="history_button">Historique</string>
     <string name="settings_button">Réglages</string>

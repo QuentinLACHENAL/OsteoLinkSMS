@@ -11,6 +11,7 @@ import android.provider.ContactsContract
 import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import com.example.osteolinksms.MainActivity.Companion.KEY_APP_ENABLED
 import com.example.osteolinksms.MainActivity.Companion.KEY_FORCE_SEND
 import com.example.osteolinksms.MainActivity.Companion.KEY_UNKNOWN_ONLY
 import com.example.osteolinksms.MainActivity.Companion.KEY_VACATION_MODE
@@ -33,11 +34,18 @@ class CallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Logger.log(context, "CallReceiver onReceive, action: ${intent.action}")
 
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        
+        // Master Switch Check
+        if (!prefs.getBoolean(KEY_APP_ENABLED, true)) {
+            Logger.log(context, "CallReceiver: App is disabled. Event ignored.")
+            return
+        }
+
         if (intent.action != TelephonyManager.ACTION_PHONE_STATE_CHANGED) {
             return
         }
 
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
         Logger.log(context, "Telephony state changed: $state")
 
