@@ -189,10 +189,10 @@ class EditMessagesActivity : AppCompatActivity() {
 
     private fun generateTemplates() {
         val prefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val name = prefs.getString(MainActivity.KEY_PRACTITIONER_NAME, "Votre Nom")
+        val name = prefs.getString(MainActivity.KEY_PRACTITIONER_NAME, "")
 
-        // Link construction
-        var linkSuffix = ""
+        val actions: String
+
         if (includeBookingLinkCheckBox.isChecked) {
             val input = doctolibIdEditText.text.toString().trim()
             val docUrl = when {
@@ -201,21 +201,29 @@ class EditMessagesActivity : AppCompatActivity() {
                 else -> "https://www.doctolib.fr/praticien/$input"
             }
 
-            linkSuffix = if (docUrl.contains("doctolib", true)) {
-                getString(R.string.template_link_doctolib, docUrl)
+            val linkSuffix = if (docUrl.contains("doctolib", true)) {
+                getString(R.string.suffix_doctolib, docUrl)
             } else {
-                getString(R.string.template_link_generic, docUrl)
+                getString(R.string.suffix_generic, docUrl)
             }
+            actions = getString(R.string.actions_with_link, linkSuffix)
+        } else {
+            actions = getString(R.string.actions_no_link)
         }
 
-        // Template assembly
-        val baseWork = getString(R.string.template_work_base)
-        val baseOff = getString(R.string.template_off_base)
-        val baseVacation = getString(R.string.template_vacation_base)
+        val greeting = if (!name.isNullOrEmpty()) {
+            getString(R.string.cabinet_prefix, name)
+        } else {
+            ""
+        }
 
-        msgWorkEditText.setText("$baseWork$linkSuffix")
-        msgOffEditText.setText("$baseOff$linkSuffix")
-        msgVacationEditText.setText("$baseVacation$linkSuffix")
+        val prefixWork = greeting + getString(R.string.prefix_work)
+        val prefixOff = greeting + getString(R.string.prefix_off)
+        val prefixVacation = greeting + getString(R.string.prefix_vacation)
+
+        msgWorkEditText.setText("$prefixWork$actions")
+        msgOffEditText.setText("$prefixOff$actions")
+        msgVacationEditText.setText("$prefixVacation$actions")
 
         Toast.makeText(this, "Modèles générés (pensez à sauvegarder)", Toast.LENGTH_SHORT).show()
     }
